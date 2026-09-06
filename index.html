@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Koushik Roy — Backend Engineer, Applied ML & LLM Systems</title>
+<meta name="description" content="Portfolio of Koushik Roy — backend engineering, async pipelines, and LLM-powered systems.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="wordmark" href="#top">KR</a>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="#experience">Experience</a>
+      <a href="#projects">Projects</a>
+      <a href="#skills">Skills</a>
+      <a href="#achievements">Achievements</a>
+      <a href="connect.html">Connect</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- HERO -->
+  <section id="top" class="hero wrap">
+    <div class="hero-text">
+      <p class="hero-kicker">Koushik Roy</p>
+      <h1>Backend engineer for systems that don't fall over<br>when the load shows up.</h1>
+      <p class="hero-sub">I build async pipelines, RAG and LLM-classification systems, and the AWS
+      infrastructure underneath them — currently doing this at Cognizant Technology Solutions.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#projects">See the work</a>
+        <a class="btn btn-ghost" href="mailto:royeren00@gmail.com">Get in touch</a>
+      </div>
+    </div>
+    <div class="hero-visual" aria-hidden="true">
+      <svg id="pipeline-svg" viewBox="0 0 420 320" width="100%" height="100%">
+        <!-- populated / animated by script.js -->
+      </svg>
+      <p class="hero-visual-caption">async job flowing through a worker queue</p>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience" class="section wrap">
+    <h2>Experience</h2>
+    <ol class="timeline">
+      <li class="timeline-item">
+        <div class="timeline-when">
+          <span class="timeline-date">Dec 2023 — May 2026</span>
+          <span class="timeline-place">Cognizant Technology Solutions, Kolkata</span>
+        </div>
+        <div class="timeline-body">
+          <h3>Programmer Analyst</h3>
+          <ul>
+            <li>Owned the full lifecycle of 35+ enhancements — ideation through deployment and maintenance — lifting system performance by 60%.</li>
+            <li>Fine-tuned sentence-transformer NLP classification models, cutting manual correspondence-processing effort by 40% across teams.</li>
+            <li>Applied AWS IAM and RBAC to enforce clearance-based access control.</li>
+            <li>Worked as the liaison between clients and cross-functional teams, gathering requirements that earned direct client appreciation.</li>
+            <li>Deployed containerized services with Docker and Kubernetes, scaling workloads to match traffic.</li>
+            <li>Automated backend workflows and custom MySQL queries, cutting manual effort by 30% and improving processing performance by 60%.</li>
+            <li>Coordinated release and defect tracking in Jira and Confluence across development and client teams.</li>
+            <li>Ran workshops that shortened new-developer onboarding from 6 weeks to 3.</li>
+          </ul>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects" class="section wrap">
+    <h2>Projects</h2>
+    <p class="section-lede">A quick glance at how each system moves, alongside what it does.</p>
+
+    <div class="project-grid">
+
+      <article class="project-card" data-demo="pipeline">
+        <div class="project-demo" data-widget="pipeline-demo" aria-hidden="true"></div>
+        <div class="project-copy">
+          <h3>Async Product Photo Processing at Scale</h3>
+          <p class="project-year">2026</p>
+          <p>An asynchronous FastAPI, Redis, and Pillow pipeline that decouples image processing from
+          uploads. Under load testing, worker pods scale from 4 to 15 automatically to absorb demand.</p>
+          <ul class="project-tags">
+            <li>FastAPI</li><li>Redis</li><li>Pillow</li><li>Docker</li><li>Kubernetes</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="project-card" data-demo="classifier">
+        <div class="project-demo" data-widget="classifier-demo" aria-hidden="true"></div>
+        <div class="project-copy">
+          <h3>Decision Assist System for Patients</h3>
+          <p class="project-year">2023 · IEEE INOCON</p>
+          <p>A clinical decision-support framework using bagging and boosting ensemble models,
+          evaluated for classification performance, explainability, and demographic fairness.</p>
+          <ul class="project-tags">
+            <li>Scikit-learn</li><li>Ensemble Models</li><li>Explainability</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="project-card" data-demo="stocks">
+        <div class="project-demo" data-widget="stocks-demo" aria-hidden="true"></div>
+        <div class="project-copy">
+          <h3>Real-Time Stock Monitoring Dashboard</h3>
+          <p class="project-year">2022</p>
+          <p>A React and PostgreSQL dashboard backed by ARIMA, LSTM, and GRU models for
+          stock-price forecasting and live market monitoring.</p>
+          <ul class="project-tags">
+            <li>React</li><li>REST API</li><li>PostgreSQL</li><li>LSTM</li><li>GRU</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="project-card project-card--static">
+        <div class="project-copy">
+          <h3>Insurance Management System (QBE)</h3>
+          <p class="project-year">2023</p>
+          <p>An NLP-based validation framework that cut manual overhead by 70% by catching recurring
+          defects, plus an automated fallback that re-ingests failed records after queue-processor
+          failures — cutting manual effort by a further 50%.</p>
+          <ul class="project-tags">
+            <li>NLP</li><li>Validation</li><li>Fault Recovery</li>
+          </ul>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills" class="section wrap">
+    <h2>Skills</h2>
+    <p class="section-lede">Hover or tap a skill for a quick note on how I use it.</p>
+
+    <div class="skills-groups">
+
+      <div class="skill-group">
+        <h3>Languages &amp; Frameworks</h3>
+        <div class="skill-tags">
+          <button class="skill-tag" data-tip="Primary language for backend services, ML pipelines, and automation scripts.">Python</button>
+          <button class="skill-tag" data-tip="Used for schema design, custom queries, and performance tuning in MySQL/PostgreSQL.">SQL</button>
+          <button class="skill-tag" data-tip="Designing and consuming REST endpoints that connect services and frontends.">REST API</button>
+          <button class="skill-tag" data-tip="Frontend scripting for interactive dashboards and dynamic UI behavior.">JavaScript</button>
+          <button class="skill-tag" data-tip="Building dashboard UIs, including the real-time stock monitoring frontend.">React</button>
+          <button class="skill-tag" data-tip="Semantic markup for accessible, structured web pages.">HTML5</button>
+          <button class="skill-tag" data-tip="Styling and layout for responsive, production-ready interfaces.">CSS3</button>
+          <button class="skill-tag" data-tip="Designing classification and support systems end-to-end, from data to deployment.">ML &amp; AI Architecture</button>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <h3>LLMs &amp; NLP</h3>
+        <div class="skill-tags">
+          <button class="skill-tag" data-tip="Retrieval-augmented generation for grounding model outputs in real data.">RAG</button>
+          <button class="skill-tag" data-tip="Vector representations that power semantic search and similarity matching.">Embeddings</button>
+          <button class="skill-tag" data-tip="Finding relevant results by meaning rather than exact keyword match.">Semantic Search</button>
+          <button class="skill-tag" data-tip="The architecture behind the sentence-transformer models I've fine-tuned.">Transformers</button>
+          <button class="skill-tag" data-tip="Orchestrating multi-step, stateful LLM workflows.">LangGraph</button>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <h3>Tools</h3>
+        <div class="skill-tags">
+          <button class="skill-tag" data-tip="Testing and documenting APIs during development.">Postman</button>
+          <button class="skill-tag" data-tip="Managing user stories, sprints, and defect tracking.">JIRA</button>
+          <button class="skill-tag" data-tip="Documentation and knowledge sharing across client and dev teams.">Confluence</button>
+          <button class="skill-tag" data-tip="Version control for every project in this portfolio.">Git</button>
+          <button class="skill-tag" data-tip="Pair-programming assistant for faster iteration and code review.">GitHub Copilot</button>
+          <button class="skill-tag" data-tip="The assistant I use for design review, debugging, and drafting docs.">Claude</button>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <h3>Infrastructure &amp; Practice</h3>
+        <div class="skill-tags">
+          <button class="skill-tag" data-tip="Container orchestration, storage, and clearance-based access control (ECS, S3, IAM/RBAC).">AWS</button>
+          <button class="skill-tag" data-tip="Backend runtime for services and tooling outside of Python.">Node.js</button>
+          <button class="skill-tag" data-tip="Sprint planning and iterative delivery across cross-functional teams.">Agile SDLC</button>
+          <button class="skill-tag" data-tip="Structured peer review to catch issues before they ship.">Code Reviews</button>
+          <button class="skill-tag" data-tip="Test suites that catch regressions before they reach clients.">Automated Testing</button>
+          <button class="skill-tag" data-tip="Software Testing Life Cycle — structured, repeatable QA process.">STLC</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ACHIEVEMENTS -->
+  <section id="achievements" class="section wrap">
+    <h2>Achievements &amp; Certifications</h2>
+    <ul class="achievements-list">
+      <li>Coursera certified in Neural Networks &amp; Deep Learning, and Python.</li>
+      <li>4-star proficiency rating in Java and AI on HackerRank.</li>
+      <li>Delivered 5 production deployments across 2 enterprise projects, recognized by the client for on-time delivery.</li>
+    </ul>
+
+    <h2 class="education-heading">Education</h2>
+    <ul class="education-list">
+      <li>
+        <span class="edu-degree">M.Tech in Data Analytics</span>
+        <span class="edu-school">KIIT University, Bhubaneswar</span>
+        <span class="edu-when">Oct 2021 — May 2023 · CGPA 8.6/10</span>
+      </li>
+      <li>
+        <span class="edu-degree">B.Tech in Information Technology</span>
+        <span class="edu-school">KIIT University, Bhubaneswar</span>
+        <span class="edu-when">Jun 2017 — May 2021 · CGPA 7.9/10</span>
+      </li>
+    </ul>
+  </section>
+
+</main>
+
+<footer id="contact" class="site-footer">
+  <div class="wrap footer-inner">
+    <div>
+      <p class="footer-name">Koushik Roy</p>
+      <p class="footer-tag">Backend Engineer — Applied ML &amp; LLM Systems</p>
+    </div>
+    <div class="footer-links">
+      <a href="mailto:royeren00@gmail.com">royeren00@gmail.com</a>
+      <a href="tel:9085604484">908-560-4484</a>
+      <a href="https://www.linkedin.com/in/-roykoushik" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://github.com/RoyKoushik-crowned" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+<div id="tooltip-bubble" class="tooltip-bubble" role="tooltip"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
