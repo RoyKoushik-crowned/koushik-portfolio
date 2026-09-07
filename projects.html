@@ -12,53 +12,155 @@
 <body class="secondary-page">
 <canvas id="site-silk-canvas" aria-hidden="true"></canvas>
 <a class="skip-link" href="#main">Skip to content</a>
+
 <header class="site-header secondary-header is-visible">
   <div class="wrap header-inner">
     <a class="wordmark" href="index.html">KR</a>
-    <nav class="site-nav" aria-label="Primary"><a href="index.html">Home</a><a href="beyond.html">Beyond</a><a href="connect.html">Connect</a></nav>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="index.html">Home</a>
+      <a href="beyond.html">Beyond</a>
+      <a href="connect.html">Connect</a>
+    </nav>
   </div>
 </header>
-<main id="main">
-<section class="secondary-hero">
-  <div class="wrap">
-    <p class="page-kicker">Full write-ups</p>
-    <h1>Seven things I’ve built.</h1>
-    <p class="page-lede">Production systems, LLM agents, machine-learning projects, and the infrastructure underneath them.</p>
-    <a class="btn btn-primary" href="#project-list" id="expand-projects">Explore all projects</a>
-  </div>
-</section>
 
-<section id="project-list" class="wrap project-list-page" aria-label="Project write-ups">
-  <article class="project-page-card">
-    <span>Backend / Infrastructure · 2026</span><h2>Async Product Photo Processing at Scale</h2>
-    <p>FastAPI, Redis, Kubernetes, autoscaling worker pods and asynchronous image processing built to keep user-facing requests fast under load.</p>
+<main id="main">
+  <section class="projects-intro secondary-hero">
+    <div class="wrap projects-intro-inner">
+      <p class="page-kicker">Full write-ups</p>
+      <h1>Seven things I’ve built.</h1>
+      <p class="page-lede">Six shipped projects and one published paper — scroll through for the real systems, numbers, and decisions behind each one.</p>
+    </div>
+  </section>
+
+  <article id="async-pipeline" class="project-full">
+    <div class="wrap project-full-grid">
+      <div class="project-full-copy">
+        <span class="project-full-tag">Backend / Infrastructure · 2026</span>
+        <h2>Async Product Photo Processing at Scale</h2>
+        <p class="project-full-lede">A personal project solving a realistic e-commerce problem: keep uploads fast even when image processing is slow, by taking the slow work off the request path entirely.</p>
+        <ul class="project-full-list">
+          <li>Built an asynchronous FastAPI, Redis, and Pillow producer/queue/consumer pipeline so CPU-bound resize-and-watermark work never blocks the upload response.</li>
+          <li>Containerized services with multi-stage Docker builds and production-oriented runtime configuration.</li>
+          <li>Deployed to Kubernetes with liveness/readiness probes, ConfigMaps and Secrets, plus HorizontalPodAutoscaling that scales worker pods 4→15 under load.</li>
+          <li>Documented a production-hardening roadmap covering event-driven autoscaling, object storage, CI/CD and observability.</li>
+        </ul>
+        <ul class="project-tags"><li>FastAPI</li><li>Redis</li><li>Pillow</li><li>Docker</li><li>Kubernetes</li><li>HPA</li></ul>
+      </div>
+      <div class="project-full-demo" data-widget="pipeline-demo" aria-label="Animated Kubernetes worker autoscaling demonstration"></div>
+    </div>
   </article>
-  <article class="project-page-card">
-    <span>LLM / GTM · 2026</span><h2>AI-Agent-Driven Outbound Growth Pipeline</h2>
-    <p>225 leads sourced and qualified end-to-end with Gemini, contextualized outreach, retries and delivery safeguards.</p>
+
+  <article id="identity360" class="project-full project-full--alt">
+    <div class="wrap project-full-grid project-full-grid--reverse">
+      <div class="project-full-copy">
+        <span class="project-full-tag">Agentic AI</span>
+        <h2>Identity360 — Agentic Customer Intelligence Platform</h2>
+        <p class="project-full-lede">A genuine multi-step LLM agent built directly on function-calling and tool-use APIs that decides which systems to query for each request.</p>
+        <ul class="project-full-list">
+          <li>Designed a multi-step LLM agent using function-calling and tool-use APIs to orchestrate data retrieval across multiple systems.</li>
+          <li>Generated unified customer insights from structured and unstructured data without a prewritten retrieval path.</li>
+          <li>Built a full-stack React, Node.js and PostgreSQL platform around the agent, including REST APIs and data models for identity resolution and entitlement validation.</li>
+          <li>Owned tool schemas, orchestration logic, validation and the surrounding analytics workflow end-to-end.</li>
+        </ul>
+        <ul class="project-tags"><li>LLM Agents</li><li>Function Calling</li><li>React</li><li>Node.js</li><li>PostgreSQL</li></ul>
+      </div>
+      <div class="project-full-demo" data-widget="agent-demo" aria-label="Animated multi-tool agent orchestration demonstration"></div>
+    </div>
   </article>
-  <article class="project-page-card">
-    <span>Agentic AI · 2026</span><h2>Identity360 — Agentic Customer Intelligence</h2>
-    <p>A function-calling LLM agent orchestrating retrieval across multiple systems for customer intelligence.</p>
+
+  <article id="growth-pipeline" class="project-full">
+    <div class="wrap project-full-grid">
+      <div class="project-full-copy">
+        <span class="project-full-tag">LLM / GTM Engineering · 2026</span>
+        <h2>AI-Agent-Driven Outbound Growth Pipeline</h2>
+        <p class="project-full-lede">An independent project designing and running a full LLM-assisted growth pipeline end-to-end, twice, with every send confirmed landing in a sandboxed inbox.</p>
+        <ul class="project-full-list">
+          <li>Ran a two-stage pipeline: a zero-API-call heuristic prefilter followed by Gemini qualification against a written rubric, with verdicts logged.</li>
+          <li>Sourced and processed 225 candidate leads across two runs, reducing the candidate set before spending LLM quota and qualifying the remaining leads for outreach.</li>
+          <li>Diagnosed and fixed production issues around exception handling, rate-limit cooldowns and batch references, protected by a mandatory dry-run gate.</li>
+          <li>Built contextualized outbound email sequencing with delivery safeguards and completed both runs with zero failed sends.</li>
+        </ul>
+        <ul class="project-tags"><li>Gemini API</li><li>GitHub API</li><li>LLM Workflows</li><li>Mailtrap</li><li>Vercel</li></ul>
+      </div>
+      <div class="project-full-demo" data-widget="funnel-demo" aria-label="Animated lead funnel demonstration"></div>
+    </div>
   </article>
-  <article class="project-page-card">
-    <span>Computer Vision</span><h2>Facial Recognition System</h2>
-    <p>Applied CNN-based recognition with model evaluation and practical feature-processing workflows.</p>
+
+  <article id="stock-dashboard" class="project-full project-full--alt">
+    <div class="wrap project-full-grid project-full-grid--reverse">
+      <div class="project-full-copy">
+        <span class="project-full-tag">Forecasting · 2023</span>
+        <h2>Real-Time Stock Monitoring Dashboard</h2>
+        <p class="project-full-lede">A single-page dashboard for watching the market and forecasting where it may head next.</p>
+        <ul class="project-full-list">
+          <li>Built a React-based application with REST APIs and PostgreSQL for real-time market monitoring.</li>
+          <li>Used ARIMA, LSTM and GRU forecasting models for stock-price prediction workflows.</li>
+          <li>Optimized backend queries and application performance while building reusable UI components and API integrations.</li>
+        </ul>
+        <ul class="project-tags"><li>React</li><li>REST API</li><li>PostgreSQL</li><li>ARIMA</li><li>LSTM</li><li>GRU</li></ul>
+      </div>
+      <div class="project-full-demo" data-widget="stocks-demo" aria-label="Animated stock forecast demonstration"></div>
+    </div>
   </article>
-  <article class="project-page-card">
-    <span>Forecasting</span><h2>Real-Time Stock Monitoring Dashboard</h2>
-    <p>Monitoring, visualization and forecasting workflows using time-series approaches and production-oriented data handling.</p>
+
+  <article id="drone-recognition" class="project-full">
+    <div class="wrap project-full-grid">
+      <div class="project-full-copy">
+        <span class="project-full-tag">Computer Vision</span>
+        <h2>Drone Control Using Facial Recognition</h2>
+        <p class="project-full-lede">A high-stakes recognition system where the evaluation goes beyond raw accuracy.</p>
+        <ul class="project-full-list">
+          <li>Developed a CNN-based recognition system achieving 90% accuracy.</li>
+          <li>Conducted false-positive/false-negative trade-off analysis for high-stakes deployment scenarios.</li>
+          <li>Performed demographic subgroup performance analysis and incorporated human-in-the-loop fail-safe protocols.</li>
+        </ul>
+        <ul class="project-tags"><li>CNN</li><li>Computer Vision</li><li>Bias Analysis</li><li>Human-in-the-loop</li></ul>
+      </div>
+      <div class="project-full-demo" data-widget="facescan-demo" aria-label="Animated facial recognition scan demonstration"></div>
+    </div>
   </article>
-  <article class="project-page-card">
-    <span>ML Systems</span><h2>Clinical Decision-Support Research</h2>
-    <p>Prediction research using bagging and boosting models with hyperparameter tuning and comparative evaluation.</p>
+
+  <article id="sudoku-ar" class="project-full project-full--alt">
+    <div class="wrap project-full-grid project-full-grid--reverse">
+      <div class="project-full-copy">
+        <span class="project-full-tag">Explainable AI / AR</span>
+        <h2>Sudoku Solver Using Augmented Reality</h2>
+        <p class="project-full-lede">A lightweight consumer-facing application where every step of the solve is visible and auditable rather than a black box.</p>
+        <ul class="project-full-list">
+          <li>Built an AR-enabled solver achieving 99% accuracy using OCR-based image extraction.</li>
+          <li>Produced fully interpretable, step-by-step output aligned with explainable-AI principles.</li>
+          <li>Optimized processing to roughly 3 seconds per grid with predictable, transparent behavior.</li>
+        </ul>
+        <ul class="project-tags"><li>OCR</li><li>Computer Vision</li><li>XAI</li><li>Real-time</li></ul>
+      </div>
+      <div class="project-full-demo" data-widget="sudoku-demo" aria-label="Animated Sudoku solving demonstration"></div>
+    </div>
   </article>
-  <article class="project-page-card">
-    <span>Backend / Web</span><h2>Additional Production Builds</h2>
-    <p>Supporting applications and integrations spanning APIs, React interfaces, deployment workflows and enterprise monitoring systems.</p>
+
+  <article id="decision-assist" class="project-full">
+    <div class="wrap project-full-grid">
+      <div class="project-full-copy">
+        <span class="project-full-tag">Published Research · IEEE INOCON 2023</span>
+        <h2>Decision Assist System for Patients Using Machine Learning</h2>
+        <p class="project-full-lede">A peer-reviewed supervised clinical decision-support framework designed to balance prediction performance with responsible evaluation.</p>
+        <ul class="project-full-list">
+          <li>Proposed a supervised clinical decision-support framework using Scikit-learn.</li>
+          <li>Used bagging and boosting ensemble models for prediction with comparative evaluation and tuning.</li>
+          <li>Evaluated explainability, demographic fairness and classification performance.</li>
+          <li>Demonstrated end-to-end ML experimentation and scientific communication through an IEEE publication.</li>
+        </ul>
+        <ul class="project-tags"><li>Scikit-learn</li><li>Ensemble Models</li><li>XAI</li><li>Fairness</li><li>IEEE</li></ul>
+      </div>
+      <div class="project-full-demo" data-widget="classifier-demo" aria-label="Animated ensemble classifier demonstration"></div>
+    </div>
   </article>
-</section>
+
+  <section class="section wrap projects-outro">
+    <p>That’s the full list — <a href="connect.html">see the repositories on GitHub</a> or <a href="index.html#top">get in touch</a>.</p>
+  </section>
 </main>
+
 <footer class="site-footer">
   <div class="wrap footer-inner">
     <div>
@@ -72,7 +174,8 @@
     </div>
   </div>
 </footer>
-<script src="cloth.js"></script>
 
+<script src="cloth.js"></script>
+<script src="projects.js"></script>
 </body>
 </html>

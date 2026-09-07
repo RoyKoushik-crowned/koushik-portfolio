@@ -1,4 +1,4 @@
-// ---------- Photo tile lightbox ----------
+// Photo tile lightbox
 (function () {
   const tiles = document.querySelectorAll('.photo-tile');
   const lightbox = document.getElementById('photo-lightbox');

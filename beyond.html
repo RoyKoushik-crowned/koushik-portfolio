@@ -12,26 +12,64 @@
 <body class="secondary-page">
 <canvas id="site-silk-canvas" aria-hidden="true"></canvas>
 <a class="skip-link" href="#main">Skip to content</a>
+
 <header class="site-header secondary-header is-visible">
   <div class="wrap header-inner">
     <a class="wordmark" href="index.html">KR</a>
-    <nav class="site-nav" aria-label="Primary"><a href="index.html">Home</a><a href="projects.html">Projects</a><a href="connect.html">Connect</a></nav>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="index.html">Home</a>
+      <a href="projects.html">Projects</a>
+      <a href="connect.html">Connect</a>
+    </nav>
   </div>
 </header>
+
 <main id="main">
-<section class="secondary-hero">
-  <div class="wrap">
-    <p class="page-kicker">Beyond the work</p>
-    <h1>Curiosity is part of the stack.</h1>
-    <p class="page-lede">The things outside engineering that shape how I learn, experiment and build.</p>
-  </div>
-</section>
-<section class="wrap beyond-grid">
-  <article class="beyond-card"><p class="page-kicker">Learning</p><h2>Deep technical rabbit holes</h2><p>Exploring systems, AI engineering patterns, distributed workloads and new ways to turn models into useful products.</p></article>
-  <article class="beyond-card"><p class="page-kicker">Building</p><h2>Ideas become prototypes</h2><p>Small experiments are where new tools, architectures and workflows get pressure-tested before becoming larger projects.</p></article>
-  <article class="beyond-card"><p class="page-kicker">Perspective</p><h2>Better systems need range</h2><p>Good engineering comes from balancing precision with curiosity and understanding the people who eventually use the system.</p></article>
-</section>
+  <section class="secondary-hero beyond-page-hero">
+    <div class="wrap">
+      <p class="page-kicker">Off the clock</p>
+      <h1>Who I am, apart from computers.</h1>
+      <p class="page-lede">Photos, what I’ve had on repeat, and a few things I’d talk about even if you took the job title away.</p>
+    </div>
+  </section>
+
+  <section id="photos" class="section wrap beyond-section">
+    <h2>Photos</h2>
+    <p class="section-lede">A few frames from outside of work. Click any tile to view it larger.</p>
+    <div class="photo-grid" id="photo-grid">
+      <button class="photo-tile" data-caption="Add a photo — replace this tile with an image."><span class="photo-tile-icon">＋</span><span class="photo-tile-label">Add a photo</span></button>
+      <button class="photo-tile" data-caption="Add a photo — replace this tile with an image."><span class="photo-tile-icon">＋</span><span class="photo-tile-label">Add a photo</span></button>
+      <button class="photo-tile" data-caption="Add a photo — replace this tile with an image."><span class="photo-tile-icon">＋</span><span class="photo-tile-label">Add a photo</span></button>
+      <button class="photo-tile" data-caption="Add a photo — replace this tile with an image."><span class="photo-tile-icon">＋</span><span class="photo-tile-label">Add a photo</span></button>
+      <button class="photo-tile" data-caption="Add a photo — replace this tile with an image."><span class="photo-tile-icon">＋</span><span class="photo-tile-label">Add a photo</span></button>
+      <button class="photo-tile" data-caption="Add a photo — replace this tile with an image."><span class="photo-tile-icon">＋</span><span class="photo-tile-label">Add a photo</span></button>
+    </div>
+  </section>
+
+  <section id="music" class="section wrap beyond-section">
+    <h2>On repeat</h2>
+    <p class="section-lede">What’s actually been playing lately.</p>
+    <ul class="music-list">
+      <li class="music-row"><span class="music-index">01</span><div class="music-meta"><span class="music-track">Add a track</span><span class="music-artist">Add the artist</span></div><span class="music-genre">genre</span></li>
+      <li class="music-row"><span class="music-index">02</span><div class="music-meta"><span class="music-track">Add a track</span><span class="music-artist">Add the artist</span></div><span class="music-genre">genre</span></li>
+      <li class="music-row"><span class="music-index">03</span><div class="music-meta"><span class="music-track">Add a track</span><span class="music-artist">Add the artist</span></div><span class="music-genre">genre</span></li>
+      <li class="music-row"><span class="music-index">04</span><div class="music-meta"><span class="music-track">Add a track</span><span class="music-artist">Add the artist</span></div><span class="music-genre">genre</span></li>
+    </ul>
+  </section>
+
+  <section id="interests" class="section wrap beyond-section">
+    <h2>Outside of work</h2>
+    <p class="section-lede">A few things worth asking about.</p>
+    <div class="interest-chips">
+      <span class="interest-chip">Add an interest</span>
+      <span class="interest-chip">Add an interest</span>
+      <span class="interest-chip">Add an interest</span>
+      <span class="interest-chip">Add an interest</span>
+      <span class="interest-chip">Add an interest</span>
+    </div>
+  </section>
 </main>
+
 <footer class="site-footer">
   <div class="wrap footer-inner">
     <div>
@@ -45,7 +83,13 @@
     </div>
   </div>
 </footer>
-<script src="cloth.js"></script>
 
+<div class="photo-lightbox" id="photo-lightbox" hidden>
+  <button class="photo-lightbox-close" id="photo-lightbox-close" aria-label="Close">✕</button>
+  <div class="photo-lightbox-body" id="photo-lightbox-body"></div>
+</div>
+
+<script src="cloth.js"></script>
+<script src="beyond.js"></script>
 </body>
 </html>
