@@ -1590,3 +1590,37 @@ main::before{
 .experience-section.is-timeline #experience-matrix-canvas{
   opacity:1 !important;
 }
+
+
+/* ==========================================================
+   V7 — SHORTER EXPERIENCE HOLD + RELIABLE POST-TIMELINE HEADER
+   ========================================================== */
+
+/* Header must sit above all silk and section layers once revealed. */
+.site-header[data-reveal-on-scroll]{
+  z-index:1000 !important;
+}
+
+.site-header[data-reveal-on-scroll].is-visible{
+  display:block !important;
+}
+
+/* Explicit readable navigation tags on the warm palette. */
+.site-header .wordmark{
+  color:#3B271C !important;
+}
+.site-header .site-nav a{
+  color:#5B4030 !important;
+  opacity:1 !important;
+}
+.site-header .site-nav a:hover{
+  color:#A64B16 !important;
+}
+
+/* Mobile-safe: don't allow nav links to be clipped by the header wrapper. */
+.site-header .header-inner{
+  min-width:0;
+}
+.site-header .site-nav{
+  min-width:0;
+}

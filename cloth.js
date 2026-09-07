@@ -157,9 +157,10 @@
   function updateProgress(){
     const r=section.getBoundingClientRect();
 
-    // Title remains essentially intact until the user has moved roughly
-    // five conventional wheel-scroll lengths through the section.
-    const holdDistance=Math.max(1500, innerHeight*1.75);
+    // Keep the Experience title for a short, deliberate hold.
+    // V6 made this too long on high-resolution/trackpad scrolling.
+    // Matrix dissolve timing remains unchanged.
+    const holdDistance=Math.max(500, innerHeight*.62);
     const dissolveDistance=Math.max(760, innerHeight*.95);
 
     // The sequence timing is unchanged. The same distance is also used as
@@ -246,12 +247,12 @@
 })();
 
 // Header reveal — strict visibility contract:
-// hidden on the hero and for the complete Experience sequence/timeline;
-// visible only after the Experience section has been fully passed.
+// hidden on the hero and throughout the complete Experience sequence/timeline;
+// visible immediately once the page moves into the section AFTER Experience.
 (() => {
   const header=document.querySelector('.site-header[data-reveal-on-scroll]');
-  const experience=document.getElementById('experience');
-  if(!header || !experience) return;
+  const projects=document.getElementById('projects');
+  if(!header || !projects) return;
 
   const setInteractive=(visible)=>{
     header.querySelectorAll('a,button').forEach(el=>{
@@ -271,12 +272,12 @@
   };
 
   const update=()=>{
-    const rect=experience.getBoundingClientRect();
+    const projectsRect=projects.getBoundingClientRect();
 
-    // Strict contract: no header on hero, no header during the complete
-    // Experience animation, and no header during the Experience timeline.
-    // It appears only after the entire Experience section has passed.
-    const visible=rect.bottom <= Math.max(0, innerHeight * 0.02);
+    // The header appears when the Projects section begins entering the viewport.
+    // This guarantees it is absent on the hero and during the entire
+    // Experience animation/timeline, then returns immediately afterwards.
+    const visible=projectsRect.top < innerHeight*.92;
 
     header.classList.toggle('is-visible',visible);
     setInteractive(visible);
