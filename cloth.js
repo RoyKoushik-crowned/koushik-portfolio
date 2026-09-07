@@ -1,137 +1,188 @@
-// ---------- Scroll-reactive flowing silk background ----------
+// ==========================================================
+// Scroll-reactive silk renderer
+// ==========================================================
 (function () {
   const canvases = document.querySelectorAll('.cloth-canvas');
   if (!canvases.length) return;
 
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const PALETTE = [[104,40,10],[155,62,15],[194,91,25],[225,133,62],[247,191,139],[255,233,209]];
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const palette = [
+    [91, 27, 6],
+    [145, 49, 9],
+    [194, 77, 17],
+    [229, 122, 48],
+    [247, 177, 106],
+    [255, 226, 196]
+  ];
 
   canvases.forEach((canvas) => {
-    const ctx = canvas.getContext('2d');
     const host = canvas.closest('.cloth-host') || canvas.parentElement;
-    const density = Number(canvas.dataset.density || 9);
+    const ctx = canvas.getContext('2d', { alpha: true });
+    const density = Math.max(7, Number(canvas.dataset.density || 10));
 
-    let width = 0, height = 0, dpr = 1;
-    let lastScroll = window.scrollY || 0;
-    let scrollVelocity = 0, flow = 0, lastTime = performance.now();
+    let width = 1, height = 1, dpr = 1;
+    let lastY = window.scrollY || 0;
+    let velocity = 0;
+    let flow = 0;
+    let lastTime = performance.now();
 
-    const bands = Array.from({ length: density }, (_, i) => ({
-      base:(i + .45)/density,
-      amplitude:22 + Math.random()*48,
-      frequency:.004 + Math.random()*.005,
-      phase:Math.random()*Math.PI*2,
-      width:34 + Math.random()*90,
-      speed:.00013 + Math.random()*.00018,
-      color:PALETTE[i % PALETTE.length],
-      alpha:.13 + Math.random()*.13,
-      tilt:-.16 + Math.random()*.32
+    const ribbons = Array.from({ length: density }, (_, i) => ({
+      y: (i + 0.28) / density,
+      amp: 34 + Math.random() * 72,
+      freq: 0.003 + Math.random() * 0.004,
+      width: 42 + Math.random() * 96,
+      phase: Math.random() * Math.PI * 2,
+      color: palette[i % palette.length],
+      alpha: 0.16 + Math.random() * 0.12,
+      drift: 0.6 + Math.random() * 1.1
     }));
 
-    function resize(){
+    function resize() {
       dpr = Math.min(window.devicePixelRatio || 1, 2);
-      width = canvas.clientWidth; height = canvas.clientHeight;
-      canvas.width = Math.round(width*dpr); canvas.height = Math.round(height*dpr);
-      ctx.setTransform(dpr,0,0,dpr,0,0);
+      width = Math.max(1, canvas.clientWidth);
+      height = Math.max(1, canvas.clientHeight);
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
-    function yAt(band,x,phase){
-      const nx = x / Math.max(width,1);
-      return band.base*height
-        + Math.sin(x*band.frequency + phase + nx*2.4)*band.amplitude
-        + Math.sin(x*band.frequency*.47 - phase*1.35)*band.amplitude*.48
-        + nx*height*band.tilt;
+    function curveY(ribbon, x, phase) {
+      const nx = x / width;
+      return (
+        ribbon.y * height +
+        Math.sin(x * ribbon.freq + phase) * ribbon.amp +
+        Math.sin(x * ribbon.freq * 0.48 - phase * 1.42) * ribbon.amp * 0.52 +
+        Math.sin(nx * Math.PI * 2.2 + phase * 0.5) * ribbon.amp * 0.18
+      );
     }
 
-    function drawBand(band,phase){
-      const step = Math.max(10,Math.round(width/100));
-      const pts = [];
-      for(let x=-step;x<=width+step;x+=step) pts.push([x,yAt(band,x,phase)]);
+    function drawRibbon(ribbon, phase) {
+      const step = Math.max(8, width / 120);
+      const points = [];
 
-      ctx.beginPath(); ctx.moveTo(pts[0][0],pts[0][1]);
-      for(let i=1;i<pts.length;i++){
-        const a=pts[i-1], b=pts[i];
-        ctx.quadraticCurveTo(a[0],a[1],(a[0]+b[0])/2,(a[1]+b[1])/2);
+      for (let x = -step; x <= width + step; x += step) {
+        points.push([x, curveY(ribbon, x, phase)]);
       }
-      const last=pts[pts.length-1];
-      ctx.lineTo(last[0],last[1]+band.width);
-      for(let i=pts.length-1;i>0;i--){
-        const a=pts[i], b=pts[i-1];
-        ctx.quadraticCurveTo(a[0],a[1]+band.width,(a[0]+b[0])/2,(a[1]+b[1])/2+band.width);
+
+      ctx.beginPath();
+      ctx.moveTo(points[0][0], points[0][1]);
+
+      for (let i = 1; i < points.length; i++) {
+        const p0 = points[i - 1];
+        const p1 = points[i];
+        ctx.quadraticCurveTo(
+          p0[0], p0[1],
+          (p0[0] + p1[0]) / 2,
+          (p0[1] + p1[1]) / 2
+        );
       }
+
+      const end = points[points.length - 1];
+      ctx.lineTo(end[0], end[1] + ribbon.width);
+
+      for (let i = points.length - 1; i > 0; i--) {
+        const p0 = points[i];
+        const p1 = points[i - 1];
+        ctx.quadraticCurveTo(
+          p0[0], p0[1] + ribbon.width,
+          (p0[0] + p1[0]) / 2,
+          (p0[1] + p1[1]) / 2 + ribbon.width
+        );
+      }
+
       ctx.closePath();
 
-      const [r,g,b] = band.color;
-      const grad = ctx.createLinearGradient(0,0,width,height);
-      grad.addColorStop(0,`rgba(${r},${g},${b},.02)`);
-      grad.addColorStop(.30,`rgba(${r},${g},${b},${band.alpha})`);
-      grad.addColorStop(.56,`rgba(255,242,224,${band.alpha*.82})`);
-      grad.addColorStop(.78,`rgba(${r},${g},${b},${band.alpha*1.1})`);
-      grad.addColorStop(1,`rgba(${r},${g},${b},.03)`);
-      ctx.fillStyle=grad; ctx.fill();
+      const [r, g, b] = ribbon.color;
+      const grad = ctx.createLinearGradient(0, 0, width, height);
+      grad.addColorStop(0, `rgba(${r},${g},${b},0.02)`);
+      grad.addColorStop(0.18, `rgba(${r},${g},${b},${ribbon.alpha})`);
+      grad.addColorStop(0.50, `rgba(255,241,222,${Math.min(.32, ribbon.alpha * 1.5)})`);
+      grad.addColorStop(0.76, `rgba(${r},${g},${b},${ribbon.alpha * 1.18})`);
+      grad.addColorStop(1, `rgba(${r},${g},${b},0.02)`);
+      ctx.fillStyle = grad;
+      ctx.fill();
 
-      ctx.save(); ctx.globalAlpha=band.alpha*.55; ctx.strokeStyle='rgba(255,248,238,.85)'; ctx.lineWidth=.7;
-      ctx.beginPath(); ctx.moveTo(pts[0][0],pts[0][1]+band.width*.16);
-      for(let i=1;i<pts.length;i++){
-        const a=pts[i-1], b=pts[i];
-        ctx.quadraticCurveTo(a[0],a[1]+band.width*.16,(a[0]+b[0])/2,(a[1]+b[1])/2+band.width*.16);
+      // Fine highlight gives the ribbons a silk sheen.
+      ctx.save();
+      ctx.globalAlpha = Math.min(.32, ribbon.alpha * 1.6);
+      ctx.strokeStyle = 'rgba(255,249,240,.9)';
+      ctx.lineWidth = 1.15;
+      ctx.beginPath();
+      ctx.moveTo(points[0][0], points[0][1] + ribbon.width * .17);
+      for (let i = 1; i < points.length; i++) {
+        const p0 = points[i - 1];
+        const p1 = points[i];
+        ctx.quadraticCurveTo(
+          p0[0], p0[1] + ribbon.width * .17,
+          (p0[0] + p1[0]) / 2,
+          (p0[1] + p1[1]) / 2 + ribbon.width * .17
+        );
       }
-      ctx.stroke(); ctx.restore();
+      ctx.stroke();
+      ctx.restore();
     }
 
-    function draw(now){
+    function frame(now) {
       const rect = host.getBoundingClientRect();
-      if(rect.bottom < -250 || rect.top > window.innerHeight + 250) return;
-      const dt = Math.min(48,now-lastTime); lastTime=now;
-      scrollVelocity *= .92;
+      if (rect.bottom < -300 || rect.top > window.innerHeight + 300) {
+        if (!reduced) requestAnimationFrame(frame);
+        return;
+      }
 
-      // Direction is intentional: down scroll advances the folds, up scroll reverses them.
-      const direction = Math.sign(scrollVelocity);
-      const boost = Math.min(Math.abs(scrollVelocity)*.018,3.4);
-      const ambient = reducedMotion ? 0 : .22;
-      flow += (ambient + boost*.55)*direction*(dt/16.67);
+      const dt = Math.min(50, now - lastTime);
+      lastTime = now;
 
-      ctx.clearRect(0,0,width,height);
-      ctx.globalCompositeOperation='screen';
-      bands.forEach((band,i)=>{
-        const phase = band.phase + flow*band.speed*520 + Math.sin(now*.00018+i)*.22;
-        drawBand(band,phase);
+      // Scroll changes direction. Ambient motion keeps the silk visibly alive.
+      velocity *= 0.91;
+      const direction = velocity === 0 ? 1 : Math.sign(velocity);
+      const scrollEnergy = Math.min(Math.abs(velocity) * 0.016, 3.8);
+      const ambient = reduced ? 0 : 0.32;
+      flow += (ambient + scrollEnergy) * direction * (dt / 16.67);
+
+      ctx.clearRect(0, 0, width, height);
+      ctx.globalCompositeOperation = 'screen';
+
+      ribbons.forEach((ribbon, i) => {
+        const phase =
+          ribbon.phase +
+          flow * ribbon.drift * 0.028 +
+          Math.sin(now * 0.00032 + i * 0.73) * 0.18;
+        drawRibbon(ribbon, phase);
       });
-      ctx.globalCompositeOperation='source-over';
+
+      ctx.globalCompositeOperation = 'source-over';
+      if (!reduced) requestAnimationFrame(frame);
     }
 
-    function loop(now){ draw(now); if(!reducedMotion) requestAnimationFrame(loop); }
+    window.addEventListener('scroll', () => {
+      const current = window.scrollY || 0;
+      velocity += current - lastY;
+      lastY = current;
+      if (reduced) frame(performance.now());
+    }, { passive: true });
 
-    window.addEventListener('scroll',()=>{
-      const next = window.scrollY || 0;
-      scrollVelocity += next-lastScroll;
-      lastScroll=next;
-      if(reducedMotion) draw(performance.now());
-    },{passive:true});
-
-    window.addEventListener('resize',()=>{resize(); if(reducedMotion) draw(performance.now());});
+    window.addEventListener('resize', resize, { passive: true });
     resize();
-    if(reducedMotion) draw(performance.now()); else requestAnimationFrame(loop);
+    frame(performance.now());
   });
 })();
 
-// ---------- Header reveal ----------
+// ==========================================================
+// Header reveal
+// ==========================================================
 (function () {
   const header = document.querySelector('.site-header[data-reveal-on-scroll]');
   if (!header) return;
-  const sentinel = document.querySelector('[data-header-sentinel]');
-  const setVisible = (visible) => {
+
+  const update = () => {
+    const visible = (window.scrollY || 0) > 120;
     header.classList.toggle('is-visible', visible);
-    header.querySelectorAll('a').forEach((a) => visible ? a.removeAttribute('tabindex') : a.setAttribute('tabindex','-1'));
+    header.querySelectorAll('a').forEach((a) => {
+      if (visible) a.removeAttribute('tabindex');
+      else a.setAttribute('tabindex', '-1');
+    });
   };
-  if (sentinel && 'IntersectionObserver' in window) {
-    const io = new IntersectionObserver(
-      (entries) => entries.forEach((entry) => setVisible(entry.boundingClientRect.top < 0)),
-      { threshold: 0 }
-    );
-    io.observe(sentinel);
-  } else {
-    const onScroll = () => setVisible(window.scrollY > 480);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-  }
+
+  window.addEventListener('scroll', update, { passive: true });
+  update();
 })();

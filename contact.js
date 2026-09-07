@@ -1,12 +1,9 @@
-// ---------- Contact popover: Email (Gmail compose), WhatsApp, LinkedIn ----------
+// ---------- Contact popover: fluid reveal ----------
 (function () {
   const trigger = document.getElementById('contact-trigger');
   const menu = document.getElementById('contact-menu');
   if (!trigger || !menu) return;
 
-  // NOTE: phone number assumed to be an Indian mobile number (+91), based on
-  // the resume's India-based education/employer context. If this number is
-  // actually a US line, change COUNTRY_CODE below (e.g. '1' for the US).
   const COUNTRY_CODE = '91';
   const PHONE_LOCAL = '9085604484';
   const EMAIL = 'royeren00@gmail.com';
@@ -21,34 +18,45 @@
   }
 
   if (whatsappLink) {
-    const text = encodeURIComponent("Hi Koushik, I found your portfolio and wanted to reach out.");
+    const text = encodeURIComponent('Hi Koushik, I found your portfolio and wanted to reach out.');
     whatsappLink.href = `https://wa.me/${COUNTRY_CODE}${PHONE_LOCAL}?text=${text}`;
   }
 
+  let closeTimer;
+
   function openMenu() {
+    clearTimeout(closeTimer);
     menu.hidden = false;
+    requestAnimationFrame(() => menu.classList.add('is-open'));
     trigger.setAttribute('aria-expanded', 'true');
     document.addEventListener('click', onOutsideClick);
     document.addEventListener('keydown', onKeydown);
   }
 
   function closeMenu() {
-    menu.hidden = true;
+    menu.classList.remove('is-open');
     trigger.setAttribute('aria-expanded', 'false');
     document.removeEventListener('click', onOutsideClick);
     document.removeEventListener('keydown', onKeydown);
+    clearTimeout(closeTimer);
+    closeTimer = setTimeout(() => {
+      if (!menu.classList.contains('is-open')) menu.hidden = true;
+    }, 480);
   }
 
   function onOutsideClick(e) {
-    if (!menu.contains(e.target) && e.target !== trigger) closeMenu();
+    if (!menu.contains(e.target) && !trigger.contains(e.target)) closeMenu();
   }
 
   function onKeydown(e) {
-    if (e.key === 'Escape') { closeMenu(); trigger.focus(); }
+    if (e.key === 'Escape') {
+      closeMenu();
+      trigger.focus();
+    }
   }
 
   trigger.addEventListener('click', (e) => {
     e.stopPropagation();
-    if (menu.hidden) openMenu(); else closeMenu();
+    menu.classList.contains('is-open') ? closeMenu() : openMenu();
   });
 })();
