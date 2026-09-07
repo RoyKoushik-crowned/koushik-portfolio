@@ -1624,3 +1624,201 @@ main::before{
 .site-header .site-nav{
   min-width:0;
 }
+
+
+/* ==========================================================
+   V8 — UNIFIED PAGE PALETTE / SILK / SIMPLIFIED NAVIGATION
+   ========================================================== */
+
+.secondary-page{
+  min-height:100vh;
+  color:#3B271C;
+  background:
+    radial-gradient(circle at 82% 8%, rgba(255,183,109,.20), transparent 30%),
+    radial-gradient(circle at 18% 78%, rgba(184,93,36,.12), transparent 34%),
+    linear-gradient(135deg,#f7f0e8 0%,#f4e8da 48%,#efe3d4 100%);
+  overflow-x:hidden;
+}
+
+.secondary-page #site-silk-canvas{
+  display:block !important;
+  opacity:.9 !important;
+  mix-blend-mode:normal !important;
+}
+
+.secondary-page main,
+.secondary-page .site-footer,
+.secondary-page .site-header{
+  position:relative;
+}
+
+.secondary-page main{ z-index:2; }
+.secondary-page .site-footer{ z-index:3; }
+
+.secondary-header{
+  position:sticky !important;
+  top:0;
+  opacity:1 !important;
+  visibility:visible !important;
+  pointer-events:auto !important;
+  background:rgba(247,240,232,.82) !important;
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(91,64,48,.35) !important;
+}
+
+.secondary-header .site-nav a,
+.secondary-header .wordmark{
+  color:#4A3022 !important;
+  opacity:1 !important;
+}
+
+.secondary-header .site-nav a:hover{
+  color:#A94E16 !important;
+}
+
+.secondary-hero{
+  min-height:62vh;
+  display:flex;
+  align-items:center;
+  padding:90px 0 72px;
+  position:relative;
+}
+
+.secondary-hero::after{
+  content:"";
+  position:absolute;
+  inset:auto 0 0;
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(91,64,48,.55),transparent);
+}
+
+.page-kicker{
+  margin:0 0 18px;
+  font-family:var(--font-mono);
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  font-size:.82rem;
+  color:#A94E16 !important;
+}
+
+.secondary-hero h1{
+  max-width:14ch;
+  margin:0;
+  color:#3B271C !important;
+  font-size:clamp(3rem,8vw,7.4rem);
+  line-height:.94;
+  letter-spacing:-.055em;
+  text-wrap:balance;
+}
+
+.page-lede{
+  max-width:64ch;
+  margin:30px 0 0;
+  color:#674F40 !important;
+  font-size:clamp(1.05rem,2vw,1.3rem);
+  line-height:1.65;
+}
+
+.project-list-page{
+  padding-top:70px;
+  padding-bottom:110px;
+}
+
+.project-page-card,
+.beyond-card,
+.connect-stack-card{
+  background:rgba(255,249,242,.70);
+  border:1px solid rgba(91,64,48,.22);
+  box-shadow:0 20px 70px rgba(91,64,48,.08);
+  backdrop-filter:blur(10px);
+}
+
+.project-page-card{
+  padding:32px;
+  margin:18px 0;
+  border-radius:18px;
+  transition:transform .35s ease,border-color .35s ease,background .35s ease;
+}
+
+.project-page-card:hover{
+  transform:translateY(-4px);
+  border-color:rgba(169,78,22,.55);
+  background:rgba(255,249,242,.86);
+}
+
+.project-page-card span{
+  font-family:var(--font-mono);
+  color:#A94E16 !important;
+  font-size:.82rem;
+}
+
+.project-page-card h2,
+.beyond-card h2,
+.connect-stack-card h2{
+  color:#3B271C !important;
+}
+
+.project-page-card p,
+.beyond-card p,
+.connect-stack-card p{
+  color:#674F40 !important;
+}
+
+.beyond-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:22px;
+  padding-bottom:110px;
+}
+
+.beyond-card{
+  min-height:300px;
+  border-radius:22px;
+  padding:32px;
+}
+
+.connect-stack{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  padding-bottom:110px;
+}
+
+.connect-stack-card{
+  display:grid;
+  grid-template-columns:72px minmax(0,1fr) 40px;
+  align-items:center;
+  gap:24px;
+  padding:30px 34px;
+  border-radius:18px;
+  text-decoration:none;
+  transition:transform .3s ease,border-color .3s ease,background .3s ease;
+}
+
+.connect-stack-card:hover{
+  transform:translateX(8px);
+  border-color:#A94E16;
+  background:rgba(255,249,242,.88);
+}
+
+.connect-order{
+  font-family:var(--font-mono);
+  color:#A94E16;
+  font-size:.88rem;
+}
+
+.connect-stack-card h2{ margin:0 0 6px; }
+.connect-stack-card p{ margin:0; }
+.connect-arrow{ font-size:1.7rem; color:#A94E16; text-align:right; }
+
+@media (max-width:780px){
+  .secondary-hero{ min-height:52vh; padding:70px 0 50px; }
+  .secondary-hero h1{ font-size:clamp(2.8rem,14vw,5rem); }
+  .beyond-grid{ grid-template-columns:1fr; }
+  .connect-stack-card{ grid-template-columns:46px minmax(0,1fr) 30px; padding:24px 20px; gap:14px; }
+}
+
+/* Keep the simplified main-page nav intentionally small and readable. */
+.site-header[data-reveal-on-scroll] .site-nav{
+  gap:28px;
+}
