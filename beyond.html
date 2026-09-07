@@ -34,38 +34,83 @@
   </section>
 
   <section id="photos" class="section wrap beyond-section">
-    <h2>Photos</h2>
-    <p class="section-lede">A few frames from outside of work. Click any tile to view it larger.</p>
-    <div class="photo-grid" id="photo-grid">
-      <button class="photo-tile" data-caption="Add a photo — replace this tile with an image."><span class="photo-tile-icon">＋</span><span class="photo-tile-label">Add a photo</span></button>
-      <button class="photo-tile" data-caption="Add a photo — replace this tile with an image."><span class="photo-tile-icon">＋</span><span class="photo-tile-label">Add a photo</span></button>
-      <button class="photo-tile" data-caption="Add a photo — replace this tile with an image."><span class="photo-tile-icon">＋</span><span class="photo-tile-label">Add a photo</span></button>
-      <button class="photo-tile" data-caption="Add a photo — replace this tile with an image."><span class="photo-tile-icon">＋</span><span class="photo-tile-label">Add a photo</span></button>
-      <button class="photo-tile" data-caption="Add a photo — replace this tile with an image."><span class="photo-tile-icon">＋</span><span class="photo-tile-label">Add a photo</span></button>
-      <button class="photo-tile" data-caption="Add a photo — replace this tile with an image."><span class="photo-tile-icon">＋</span><span class="photo-tile-label">Add a photo</span></button>
+    <div class="beyond-section-head">
+      <div>
+        <h2>Photos</h2>
+        <p class="section-lede">The latest six frames from Instagram.</p>
+      </div>
+      <a class="section-outbound" href="https://www.instagram.com/roysgallery.jpg/" target="_blank" rel="noopener">Open Instagram ↗</a>
     </div>
+    <div class="photo-grid instagram-grid" id="photo-grid" aria-live="polite">
+      <a class="instagram-placeholder" href="https://www.instagram.com/roysgallery.jpg/" target="_blank" rel="noopener">Loading latest frame…</a>
+      <a class="instagram-placeholder" href="https://www.instagram.com/roysgallery.jpg/" target="_blank" rel="noopener">Loading latest frame…</a>
+      <a class="instagram-placeholder" href="https://www.instagram.com/roysgallery.jpg/" target="_blank" rel="noopener">Loading latest frame…</a>
+      <a class="instagram-placeholder" href="https://www.instagram.com/roysgallery.jpg/" target="_blank" rel="noopener">Loading latest frame…</a>
+      <a class="instagram-placeholder" href="https://www.instagram.com/roysgallery.jpg/" target="_blank" rel="noopener">Loading latest frame…</a>
+      <a class="instagram-placeholder" href="https://www.instagram.com/roysgallery.jpg/" target="_blank" rel="noopener">Loading latest frame…</a>
+    </div>
+    <p class="instagram-note" id="instagram-note">Tap any frame to continue to Instagram.</p>
   </section>
 
   <section id="music" class="section wrap beyond-section">
-    <h2>On repeat</h2>
-    <p class="section-lede">What’s actually been playing lately.</p>
-    <ul class="music-list">
-      <li class="music-row"><span class="music-index">01</span><div class="music-meta"><span class="music-track">Add a track</span><span class="music-artist">Add the artist</span></div><span class="music-genre">genre</span></li>
-      <li class="music-row"><span class="music-index">02</span><div class="music-meta"><span class="music-track">Add a track</span><span class="music-artist">Add the artist</span></div><span class="music-genre">genre</span></li>
-      <li class="music-row"><span class="music-index">03</span><div class="music-meta"><span class="music-track">Add a track</span><span class="music-artist">Add the artist</span></div><span class="music-genre">genre</span></li>
-      <li class="music-row"><span class="music-index">04</span><div class="music-meta"><span class="music-track">Add a track</span><span class="music-artist">Add the artist</span></div><span class="music-genre">genre</span></li>
-    </ul>
+    <div class="beyond-section-head">
+      <div>
+        <h2>On repeat</h2>
+        <p class="section-lede">Six tracks currently in rotation. Click one to open it in YouTube Music.</p>
+      </div>
+      <span class="music-live-indicator" aria-label="Music selection">● now playing</span>
+    </div>
+    <ol class="music-list music-list--rich" id="music-list">
+      <li class="music-row music-row--link" data-id="LEG-wqg3b2M" data-url="https://music.youtube.com/watch?v=LEG-wqg3b2M&si=imL23Uybu6i79SO4">
+        <a class="music-open" href="https://music.youtube.com/watch?v=LEG-wqg3b2M&si=imL23Uybu6i79SO4" target="_blank" rel="noopener">
+          <span class="music-index">01</span><img class="music-art" src="https://i.ytimg.com/vi/LEG-wqg3b2M/hqdefault.jpg" alt=""><span class="music-meta"><span class="music-track">Astronomical</span><span class="music-artist">SVRCINA</span></span><span class="music-open-mark">↗</span>
+        </a>
+      </li>
+      <li class="music-row music-row--link" data-id="Yxx-zTuw1xE" data-url="https://music.youtube.com/watch?v=Yxx-zTuw1xE&si=axh6H7B5x8h3mM-N">
+        <a class="music-open" href="https://music.youtube.com/watch?v=Yxx-zTuw1xE&si=axh6H7B5x8h3mM-N" target="_blank" rel="noopener">
+          <span class="music-index">02</span><img class="music-art" src="https://i.ytimg.com/vi/Yxx-zTuw1xE/hqdefault.jpg" alt=""><span class="music-meta"><span class="music-track">Track 02</span><span class="music-artist">Open in YouTube Music</span></span><span class="music-open-mark">↗</span>
+        </a>
+      </li>
+      <li class="music-row music-row--link" data-id="uNGmyQ8UbZ8" data-url="https://music.youtube.com/watch?v=uNGmyQ8UbZ8&si=UMlEt1nMQ3Fcy0cI">
+        <a class="music-open" href="https://music.youtube.com/watch?v=uNGmyQ8UbZ8&si=UMlEt1nMQ3Fcy0cI" target="_blank" rel="noopener">
+          <span class="music-index">03</span><img class="music-art" src="https://i.ytimg.com/vi/uNGmyQ8UbZ8/hqdefault.jpg" alt=""><span class="music-meta"><span class="music-track">I Hold You</span><span class="music-artist">Seelie</span></span><span class="music-open-mark">↗</span>
+        </a>
+      </li>
+      <li class="music-row music-row--link" data-id="t9mEIYV6TsA" data-url="https://music.youtube.com/watch?v=t9mEIYV6TsA&si=WX1sPJGfUH_0WEuL">
+        <a class="music-open" href="https://music.youtube.com/watch?v=t9mEIYV6TsA&si=WX1sPJGfUH_0WEuL" target="_blank" rel="noopener">
+          <span class="music-index">04</span><img class="music-art" src="https://i.ytimg.com/vi/t9mEIYV6TsA/hqdefault.jpg" alt=""><span class="music-meta"><span class="music-track">Track 04</span><span class="music-artist">Open in YouTube Music</span></span><span class="music-open-mark">↗</span>
+        </a>
+      </li>
+      <li class="music-row music-row--link" data-id="4-UUCyoH4Is" data-url="https://music.youtube.com/watch?v=4-UUCyoH4Is&si=llfX_ArqVHwx8EMJ">
+        <a class="music-open" href="https://music.youtube.com/watch?v=4-UUCyoH4Is&si=llfX_ArqVHwx8EMJ" target="_blank" rel="noopener">
+          <span class="music-index">05</span><img class="music-art" src="https://i.ytimg.com/vi/4-UUCyoH4Is/hqdefault.jpg" alt=""><span class="music-meta"><span class="music-track">Galliyan Returns</span><span class="music-artist">Ek Villain Returns</span></span><span class="music-open-mark">↗</span>
+        </a>
+      </li>
+      <li class="music-row music-row--link" data-id="viFM7hEbvOM" data-url="https://music.youtube.com/watch?v=viFM7hEbvOM&si=1kbiCjor9pR1ImZl">
+        <a class="music-open" href="https://music.youtube.com/watch?v=viFM7hEbvOM&si=1kbiCjor9pR1ImZl" target="_blank" rel="noopener">
+          <span class="music-index">06</span><img class="music-art" src="https://i.ytimg.com/vi/viFM7hEbvOM/hqdefault.jpg" alt=""><span class="music-meta"><span class="music-track">Track 06</span><span class="music-artist">Open in YouTube Music</span></span><span class="music-open-mark">↗</span>
+        </a>
+      </li>
+    </ol>
   </section>
 
   <section id="interests" class="section wrap beyond-section">
     <h2>Outside of work</h2>
     <p class="section-lede">A few things worth asking about.</p>
     <div class="interest-chips">
-      <span class="interest-chip">Add an interest</span>
-      <span class="interest-chip">Add an interest</span>
-      <span class="interest-chip">Add an interest</span>
-      <span class="interest-chip">Add an interest</span>
-      <span class="interest-chip">Add an interest</span>
+      <span class="interest-chip">Cooking</span>
+      <span class="interest-chip">Painting</span>
+      <span class="interest-chip">Poems <small>(Authored a book on Amazon.in)</small></span>
+      <button class="interest-chip interest-chip--easter" id="hyperbike-trigger" type="button" aria-expanded="false">
+        <span class="easter-label">Obsess over bikes &amp; cars</span><span class="easter-arrow">↯</span>
+      </button>
+    </div>
+    <div class="hyperbike-stage" id="hyperbike-stage" hidden aria-live="polite">
+      <div class="hyperbike-glow"></div>
+      <div class="tach"><span class="tach-label">HYPERBIKE MODE</span><div class="tach-bar"><i></i></div><span class="tach-rpm">0 RPM</span></div>
+      <div class="gear-display"><span class="gear-caption">GEAR</span><strong id="gear-value">N</strong></div>
+      <div class="engine-status" id="engine-status">IGNITION ARMED</div>
+      <button class="engine-stop" id="engine-stop" type="button">Kill switch</button>
     </div>
   </section>
 </main>
