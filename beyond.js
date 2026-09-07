@@ -1,38 +1,8 @@
 (() => {
-  const instagramProfile = 'https://www.instagram.com/roysgallery.jpg/';
   const grid = document.getElementById('photo-grid');
-  const note = document.getElementById('instagram-note');
 
-  function renderInstagram(posts) {
-    if (!grid || !Array.isArray(posts) || !posts.length) return;
-    grid.innerHTML = posts.slice(0, 6).map((post, i) => {
-      const media = post.media_url || post.thumbnail_url;
-      const caption = (post.caption || `Instagram photo ${i + 1}`).replace(/"/g, '&quot;');
-      return `<a class="photo-tile instagram-tile" href="${post.permalink || instagramProfile}" target="_blank" rel="noopener" aria-label="Open Instagram post ${i + 1}">
-        ${media ? `<img src="${media}" alt="${caption}">` : `<span class="instagram-fallback">Open on Instagram ↗</span>`}
-        <span class="instagram-overlay">Open ↗</span>
-      </a>`;
-    }).join('');
-    if (note) note.textContent = 'Latest posts from @roysgallery.jpg — click any frame to open it on Instagram.';
-  }
-
-  // Vercel serverless endpoint. It uses env vars, so the Instagram token never reaches the browser.
-  fetch('/api/instagram')
-    .then(r => r.ok ? r.json() : Promise.reject())
-    .then(data => renderInstagram(data.posts))
-    .catch(() => {
-      if (grid) {
-        [...grid.children].forEach((el, i) => {
-          el.textContent = '';
-          el.className = 'instagram-placeholder';
-          el.href = instagramProfile;
-          el.target = '_blank';
-          el.rel = 'noopener';
-          el.innerHTML = `<span>@roysgallery.jpg</span><small>Latest frame ${String(i + 1).padStart(2, '0')} ↗</small>`;
-        });
-      }
-      if (note) note.textContent = 'Instagram feed will populate automatically once the secure Instagram API variables are added in Vercel.';
-    });
+  // Static gallery: the nine local photographs are loaded directly from the images folder.
+  // Clicking a frame opens it in the site's lightbox instead of fetching Instagram.
 
   // Fill missing YouTube titles using YouTube's oEmbed metadata when available.
   document.querySelectorAll('.music-row--link').forEach((row) => {
@@ -48,24 +18,36 @@
       }).catch(() => {});
   });
 
-  // Lightbox for Instagram images, while preserving the outbound post destination.
+  // Lightbox for the nine static gallery images.
   const lightbox = document.getElementById('photo-lightbox');
   const body = document.getElementById('photo-lightbox-body');
   const closeBtn = document.getElementById('photo-lightbox-close');
+
   document.addEventListener('click', (e) => {
     const tile = e.target.closest('.instagram-tile');
     if (!tile || !lightbox) return;
     const img = tile.querySelector('img');
     if (!img) return;
-    e.preventDefault();
-    body.innerHTML = `<img src="${img.src}" alt="${img.alt}"><a class="lightbox-outbound" href="${tile.href}" target="_blank" rel="noopener">Open on Instagram ↗</a>`;
+
+    body.innerHTML = `<img src="${img.src}" alt="${img.alt}">`;
     lightbox.hidden = false;
     closeBtn?.focus();
   });
-  const close = () => { if (lightbox) { lightbox.hidden = true; body.innerHTML = ''; } };
+
+  const close = () => {
+    if (lightbox) {
+      lightbox.hidden = true;
+      body.innerHTML = '';
+    }
+  };
+
   closeBtn?.addEventListener('click', close);
-  lightbox?.addEventListener('click', e => { if (e.target === lightbox) close(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+  lightbox?.addEventListener('click', e => {
+    if (e.target === lightbox) close();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') close();
+  });
 
   // Hyperbike easter egg: synthesized engine sequence (not a recording of a specific motorcycle).
   const trigger = document.getElementById('hyperbike-trigger');
