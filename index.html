@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<canvas id="site-silk-canvas" aria-hidden="true"></canvas>
 
 <a class="skip-link" href="#main">Skip to content</a>
 
@@ -73,8 +74,14 @@
   </section>
 
   <!-- EXPERIENCE -->
-  <section id="experience" class="section wrap">
-    <h2>Experience</h2>
+  <section id="experience" class="section wrap experience-section">
+    <div class="experience-reveal" aria-hidden="true">
+      <canvas id="experience-matrix-canvas"></canvas>
+      <h2 class="experience-display-title">Experience</h2>
+    </div>
+    <div class="experience-content">
+
+    
     <ol class="timeline">
 
       <li class="timeline-item">
@@ -113,6 +120,8 @@
       </li>
 
     </ol>
+  
+    </div>
   </section>
 
   <!-- PROJECTS TEASER -->
