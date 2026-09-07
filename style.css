@@ -1526,3 +1526,67 @@ main::before{
     visibility 0s linear 0s !important;
 }
 
+
+
+/* ==========================================================
+   V6 — STRUCTURAL EXPERIENCE SEQUENCE FIX
+   ========================================================== */
+
+/*
+  IMPORTANT:
+  The Experience timing itself is unchanged.
+  The timeline is physically pushed below the sticky sequence by exactly
+  the same hold + dissolve distance calculated in cloth.js.
+  This prevents the timeline from entering underneath "Experience".
+*/
+.experience-section{
+  --experience-sequence-distance: 2260px;
+}
+
+.experience-content{
+  margin-top:var(--experience-sequence-distance) !important;
+  opacity:1 !important;
+  transform:none !important;
+}
+
+/*
+  The sticky reveal owns the viewport until its sequence is complete.
+  The timeline therefore cannot appear behind it at any point.
+*/
+.experience-reveal{
+  z-index:10 !important;
+  isolation:isolate !important;
+}
+
+.experience-content{
+  z-index:20 !important;
+}
+
+/* Matrix canvas is a true full-viewport animation layer during dissolve. */
+#experience-matrix-canvas{
+  display:block !important;
+  opacity:1 !important;
+  visibility:visible !important;
+  z-index:30 !important;
+}
+
+/* Title sits below the numerical disintegration layer. */
+.experience-display-title{
+  z-index:20 !important;
+}
+
+/*
+  Once the actual timeline reaches the viewport, remove the sticky stage
+  completely. This is controlled by JS from the timeline's real viewport
+  position, not by an estimated dissolve percentage.
+*/
+.experience-section.is-timeline .experience-reveal{
+  opacity:0 !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+}
+
+/* Do not fade the matrix canvas independently before the stage is removed. */
+.experience-section.is-timeline #experience-matrix-canvas{
+  opacity:1 !important;
+}

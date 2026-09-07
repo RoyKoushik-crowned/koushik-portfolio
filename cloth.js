@@ -161,13 +161,21 @@
     // five conventional wheel-scroll lengths through the section.
     const holdDistance=Math.max(1500, innerHeight*1.75);
     const dissolveDistance=Math.max(760, innerHeight*.95);
-    const travelled=Math.max(0,-r.top);
 
+    // The sequence timing is unchanged. The same distance is also used as
+    // physical space before the timeline so the sticky stage can never sit
+    // on top of timeline content.
+    section.style.setProperty(
+      '--experience-sequence-distance',
+      `${Math.ceil(holdDistance + dissolveDistance)}px`
+    );
+
+    const travelled=Math.max(0,-r.top);
     const hold=Math.min(1,travelled/holdDistance);
     const dissolve=Math.max(0,Math.min(1,(travelled-holdDistance)/dissolveDistance));
 
     // Keep title at full strength during hold; disintegrate after.
-    p={hold,dissolve,travelled};
+    p={hold,dissolve,travelled,holdDistance,dissolveDistance};
   }
 
   function render(now){
@@ -215,15 +223,19 @@
     title.style.letterSpacing=`${-.08+d*.20}em`;
     title.style.filter=`blur(${d*3}px)`;
 
-    // Reveal timeline only after matrix has substantially completed.
-    const reveal=Math.max(0,Math.min(1,(d-.68)/.32));
-    content.style.opacity=String(.45+reveal*.55);
-    content.style.transform=`translateY(${(1-reveal)*28}px)`;
+    // The timeline is structurally placed after the complete sequence.
+    // Use its actual viewport position to decide when the sticky stage ends.
+    const contentRect=content.getBoundingClientRect();
+    const timelineReached=contentRect.top <= innerHeight*.72;
+
+    content.style.opacity='1';
+    content.style.transform='none';
 
     section.classList.toggle('is-matrixing',d>.01&&d<.995);
-    // The timing/hold is unchanged. Once the timeline phase is reached,
-    // the sticky stage is visually removed so it cannot cover the timeline.
-    section.classList.toggle('is-timeline',d>=.94);
+
+    // Do NOT hide the Experience stage merely because the dissolve percentage
+    // crossed a threshold. Hide it only when the real timeline arrives.
+    section.classList.toggle('is-timeline',timelineReached);
 
     if(!reduced) requestAnimationFrame(render);
   }
@@ -260,9 +272,12 @@
 
   const update=()=>{
     const rect=experience.getBoundingClientRect();
-    // Header appears only after the bottom of Experience has moved above
-    // the viewport. This keeps it fully hidden on the hero AND timeline.
-    const visible=rect.bottom<=0;
+
+    // Strict contract: no header on hero, no header during the complete
+    // Experience animation, and no header during the Experience timeline.
+    // It appears only after the entire Experience section has passed.
+    const visible=rect.bottom <= Math.max(0, innerHeight * 0.02);
+
     header.classList.toggle('is-visible',visible);
     setInteractive(visible);
   };
