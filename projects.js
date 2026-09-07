@@ -21,8 +21,8 @@ function renderPipelineDemo(container) {
     rect.setAttribute('width', 28);
     rect.setAttribute('height', 22);
     rect.setAttribute('rx', 4);
-    rect.setAttribute('fill', '#0B1220');
-    rect.setAttribute('stroke', '#263449');
+    rect.setAttribute('fill', '#FFF9F2');
+    rect.setAttribute('stroke', '#DEC8B7');
     svg.appendChild(rect);
     podEls.push(rect);
   }
@@ -30,7 +30,7 @@ function renderPipelineDemo(container) {
   label.setAttribute('x', 150);
   label.setAttribute('y', 132);
   label.setAttribute('text-anchor', 'middle');
-  label.setAttribute('fill', '#8B98AF');
+  label.setAttribute('fill', '#7A5A48');
   label.setAttribute('font-family', 'IBM Plex Mono, monospace');
   label.setAttribute('font-size', '10');
   svg.appendChild(label);
@@ -43,8 +43,8 @@ function renderPipelineDemo(container) {
     if (active <= 4) dir = 1;
     podEls.forEach((rect, i) => {
       const on = i < active;
-      rect.setAttribute('fill', on ? '#E8A33D' : '#0B1220');
-      rect.setAttribute('stroke', on ? '#E8A33D' : '#263449');
+      rect.setAttribute('fill', on ? '#B85D24' : '#FFF9F2');
+      rect.setAttribute('stroke', on ? '#B85D24' : '#DEC8B7');
     });
     label.textContent = `HorizontalPodAutoscaler: ${active} pods`;
   }
@@ -67,21 +67,21 @@ function renderClassifierDemo(container) {
     const bar = document.createElementNS(NS, 'rect');
     bar.setAttribute('x', 24 + i * 36);
     bar.setAttribute('width', 20);
-    bar.setAttribute('fill', '#4FD1C5');
+    bar.setAttribute('fill', '#8B3E1B');
     bar.setAttribute('rx', 2);
     svg.appendChild(bar);
     barEls.push(bar);
   }
   const line = document.createElementNS(NS, 'line');
   line.setAttribute('x1', 10); line.setAttribute('x2', 290);
-  line.setAttribute('stroke', '#263449');
+  line.setAttribute('stroke', '#DEC8B7');
   svg.appendChild(line);
 
   const label = document.createElementNS(NS, 'text');
   label.setAttribute('x', 150);
   label.setAttribute('y', 132);
   label.setAttribute('text-anchor', 'middle');
-  label.setAttribute('fill', '#8B98AF');
+  label.setAttribute('fill', '#7A5A48');
   label.setAttribute('font-family', 'IBM Plex Mono, monospace');
   label.setAttribute('font-size', '10');
   svg.appendChild(label);
@@ -97,7 +97,7 @@ function renderClassifierDemo(container) {
       if (vote) votesYes++;
       bar.setAttribute('height', h);
       bar.setAttribute('y', baseline - h);
-      bar.setAttribute('fill', vote ? '#4FD1C5' : '#3A4A63');
+      bar.setAttribute('fill', vote ? '#8B3E1B' : '#C99B7E');
     });
     const majority = votesYes > trees / 2;
     label.textContent = `${votesYes}/${trees} learners agree — ${majority ? 'high risk flagged' : 'low risk'}`;
@@ -119,13 +119,13 @@ function renderStocksDemo(container) {
   let data = Array.from({ length: points }, () => 70 + Math.random() * 20);
   const actualPath = document.createElementNS(NS, 'polyline');
   actualPath.setAttribute('fill', 'none');
-  actualPath.setAttribute('stroke', '#4FD1C5');
+  actualPath.setAttribute('stroke', '#8B3E1B');
   actualPath.setAttribute('stroke-width', '2');
   svg.appendChild(actualPath);
 
   const forecastPath = document.createElementNS(NS, 'polyline');
   forecastPath.setAttribute('fill', 'none');
-  forecastPath.setAttribute('stroke', '#E8A33D');
+  forecastPath.setAttribute('stroke', '#B85D24');
   forecastPath.setAttribute('stroke-width', '2');
   forecastPath.setAttribute('stroke-dasharray', '4 3');
   svg.appendChild(forecastPath);
@@ -134,7 +134,7 @@ function renderStocksDemo(container) {
   label.setAttribute('x', 150);
   label.setAttribute('y', 132);
   label.setAttribute('text-anchor', 'middle');
-  label.setAttribute('fill', '#8B98AF');
+  label.setAttribute('fill', '#7A5A48');
   label.setAttribute('font-family', 'IBM Plex Mono, monospace');
   label.setAttribute('font-size', '10');
   label.textContent = 'live price vs. LSTM/GRU forecast';
@@ -184,15 +184,15 @@ function renderAgentDemo(container) {
     const circle = document.createElementNS(NS, 'circle');
     circle.setAttribute('cx', n.x); circle.setAttribute('cy', n.y);
     circle.setAttribute('r', isEnd ? 16 : 12);
-    circle.setAttribute('fill', isEnd ? '#4FD1C5' : '#16213A');
-    circle.setAttribute('stroke', isEnd ? '#4FD1C5' : '#E8A33D');
+    circle.setAttribute('fill', isEnd ? '#8B3E1B' : '#F1E2D4');
+    circle.setAttribute('stroke', isEnd ? '#8B3E1B' : '#B85D24');
     circle.setAttribute('stroke-width', 1.5);
     svg.appendChild(circle);
     const text = document.createElementNS(NS, 'text');
     text.setAttribute('x', n.x);
     text.setAttribute('y', n.y + (n.label === 'Agent' || n.label === 'Insight' ? 32 : 26));
     text.setAttribute('text-anchor', 'middle');
-    text.setAttribute('fill', '#8B98AF');
+    text.setAttribute('fill', '#7A5A48');
     text.setAttribute('font-family', 'IBM Plex Mono, monospace');
     text.setAttribute('font-size', '9');
     text.textContent = n.label;
@@ -204,7 +204,7 @@ function renderAgentDemo(container) {
     const line = document.createElementNS(NS, 'line');
     line.setAttribute('x1', nodes[a].x); line.setAttribute('y1', nodes[a].y);
     line.setAttribute('x2', nodes[b].x); line.setAttribute('y2', nodes[b].y);
-    line.setAttribute('stroke', '#263449');
+    line.setAttribute('stroke', '#DEC8B7');
     svg.appendChild(line);
   });
 
@@ -212,7 +212,7 @@ function renderAgentDemo(container) {
   callPaths.forEach((path, i) => {
     const dot = document.createElementNS(NS, 'circle');
     dot.setAttribute('r', 4);
-    dot.setAttribute('fill', '#E8A33D');
+    dot.setAttribute('fill', '#B85D24');
     svg.appendChild(dot);
     const d = `M ${nodes[path[0]].x} ${nodes[path[0]].y} L ${nodes[path[1]].x} ${nodes[path[1]].y} L ${nodes[path[2]].x} ${nodes[path[2]].y}`;
     const animate = document.createElementNS(NS, 'animateMotion');
@@ -237,13 +237,13 @@ function renderFaceScanDemo(container) {
   box.setAttribute('x', 105); box.setAttribute('y', 15);
   box.setAttribute('width', 90); box.setAttribute('height', 90);
   box.setAttribute('fill', 'none');
-  box.setAttribute('stroke', '#4FD1C5');
+  box.setAttribute('stroke', '#8B3E1B');
   box.setAttribute('stroke-width', 2);
   svg.appendChild(box);
 
   const scanLine = document.createElementNS(NS, 'line');
   scanLine.setAttribute('x1', 105); scanLine.setAttribute('x2', 195);
-  scanLine.setAttribute('stroke', '#E8A33D');
+  scanLine.setAttribute('stroke', '#B85D24');
   scanLine.setAttribute('stroke-width', 2);
   svg.appendChild(scanLine);
 
@@ -251,7 +251,7 @@ function renderFaceScanDemo(container) {
   label.setAttribute('x', 150);
   label.setAttribute('y', 128);
   label.setAttribute('text-anchor', 'middle');
-  label.setAttribute('fill', '#8B98AF');
+  label.setAttribute('fill', '#7A5A48');
   label.setAttribute('font-family', 'IBM Plex Mono, monospace');
   label.setAttribute('font-size', '10');
   svg.appendChild(label);
@@ -291,8 +291,8 @@ function renderSudokuDemo(container) {
       rect.setAttribute('y', startY + r * cell);
       rect.setAttribute('width', cell - 1);
       rect.setAttribute('height', cell - 1);
-      rect.setAttribute('fill', '#16213A');
-      rect.setAttribute('stroke', '#263449');
+      rect.setAttribute('fill', '#F1E2D4');
+      rect.setAttribute('stroke', '#DEC8B7');
       svg.appendChild(rect);
       cells.push(rect);
     }
@@ -302,14 +302,14 @@ function renderSudokuDemo(container) {
   label.setAttribute('x', 150);
   label.setAttribute('y', 128);
   label.setAttribute('text-anchor', 'middle');
-  label.setAttribute('fill', '#8B98AF');
+  label.setAttribute('fill', '#7A5A48');
   label.setAttribute('font-family', 'IBM Plex Mono, monospace');
   label.setAttribute('font-size', '10');
   svg.appendChild(label);
 
   let filled = 0;
   function tick() {
-    cells.forEach((c, i) => c.setAttribute('fill', i < filled ? '#E8A33D' : '#16213A'));
+    cells.forEach((c, i) => c.setAttribute('fill', i < filled ? '#B85D24' : '#F1E2D4'));
     label.textContent = filled >= cells.length ? 'solved in ~3s · 99% accuracy' : 'reading grid via OCR…';
     filled = filled >= cells.length ? 0 : filled + 4;
   }
@@ -327,10 +327,10 @@ function renderFunnelDemo(container) {
   container.appendChild(svg);
 
   const stages = [
-    { label: 'Sourced', value: 225, color: '#4FD1C5' },
-    { label: 'Prefiltered', value: 135, color: '#4FD1C5' },
-    { label: 'LLM-qualified', value: 22, color: '#E8A33D' },
-    { label: 'Sent', value: 22, color: '#E8A33D' },
+    { label: 'Sourced', value: 225, color: '#8B3E1B' },
+    { label: 'Prefiltered', value: 135, color: '#8B3E1B' },
+    { label: 'LLM-qualified', value: 22, color: '#B85D24' },
+    { label: 'Sent', value: 22, color: '#B85D24' },
   ];
   const max = stages[0].value;
   const barW = 56;
@@ -379,7 +379,7 @@ function renderFunnelDemo(container) {
     nameLabel.setAttribute('x', 12 + i * 72 + barW / 2);
     nameLabel.setAttribute('y', baseline + 14);
     nameLabel.setAttribute('text-anchor', 'middle');
-    nameLabel.setAttribute('fill', '#8B98AF');
+    nameLabel.setAttribute('fill', '#7A5A48');
     nameLabel.setAttribute('font-family', 'IBM Plex Mono, monospace');
     nameLabel.setAttribute('font-size', '9');
     nameLabel.textContent = s.label;
@@ -390,7 +390,7 @@ function renderFunnelDemo(container) {
   caption.setAttribute('x', 150);
   caption.setAttribute('y', 138);
   caption.setAttribute('text-anchor', 'middle');
-  caption.setAttribute('fill', '#8B98AF');
+  caption.setAttribute('fill', '#7A5A48');
   caption.setAttribute('font-family', 'IBM Plex Mono, monospace');
   caption.setAttribute('font-size', '9');
   caption.textContent = 'two runs · zero failed sends';
