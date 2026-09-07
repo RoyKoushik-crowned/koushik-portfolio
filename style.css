@@ -1457,3 +1457,72 @@ main::before{
   }
 }
 
+
+
+/* ==========================================================
+   V5 — EXPERIENCE LAYERING + MATRIX VISIBILITY + HEADER RULE
+   ========================================================== */
+
+/*
+   Keep the exact full-screen Experience duration from V4.
+   Only change what happens when the timeline starts: the stage
+   must no longer visually sit over the timeline.
+*/
+.experience-section.is-timeline .experience-reveal{
+  opacity:0 !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+  transition:opacity .28s linear, visibility 0s linear .28s !important;
+}
+
+/* Timeline is always the top visual layer once it begins. */
+.experience-content{
+  position:relative !important;
+  z-index:20 !important;
+}
+
+/*
+   Matrix is intentionally stronger and above the title while
+   disintegration is active. It remains full-viewport/edge-to-edge.
+*/
+.experience-section.is-matrixing .experience-reveal{
+  opacity:1 !important;
+  visibility:visible !important;
+}
+.experience-section.is-matrixing #experience-matrix-canvas{
+  opacity:1 !important;
+  visibility:visible !important;
+  z-index:8 !important;
+  mix-blend-mode:normal !important;
+}
+.experience-section.is-matrixing .experience-display-title{
+  z-index:7 !important;
+}
+
+/*
+   Header visibility contract:
+   - invisible throughout hero
+   - invisible throughout the Experience sequence and timeline
+   - visible only after the entire Experience section has been passed
+*/
+.site-header[data-reveal-on-scroll]{
+  opacity:0 !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+  transform:translateY(-12px) !important;
+  transition:
+    opacity .35s ease,
+    transform .35s ease,
+    visibility 0s linear .35s !important;
+}
+.site-header[data-reveal-on-scroll].is-visible{
+  opacity:1 !important;
+  visibility:visible !important;
+  pointer-events:auto !important;
+  transform:translateY(0) !important;
+  transition:
+    opacity .35s ease,
+    transform .35s ease,
+    visibility 0s linear 0s !important;
+}
+

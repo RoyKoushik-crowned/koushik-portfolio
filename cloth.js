@@ -176,25 +176,33 @@
 
     ctx.clearRect(0,0,w,h);
 
-    // Matrix starts only when the title begins disintegrating.
-    if(dissolve>.01 && dissolve<.98){
-      const intensity=Math.sin(Math.PI*Math.min(1,dissolve))*0.96;
+    // Matrix begins when the title begins disintegrating and is deliberately
+    // high-contrast so it cannot disappear into the warm silk background.
+    if(dissolve>.01 && dissolve<.995){
+      const intensity=Math.min(1, .34 + Math.sin(Math.PI*Math.min(1,dissolve))*.82);
       ctx.save();
       ctx.globalAlpha=intensity;
       columns.forEach((col,i)=>{
         const step=col.size*1.12;
-        const head=(col.offset+now*.042*col.speed)% (h+step*18);
-        const tail=10+Math.floor(dissolve*18);
+        const head=(col.offset+now*.060*col.speed)% (h+step*22);
+        const tail=14+Math.floor(dissolve*24);
+
         for(let n=0;n<tail;n++){
           const yy=head-n*step;
           if(yy<0||yy>h) continue;
-          const fade=(1-n/tail);
+          const fade=Math.pow(1-n/tail, 1.35);
+
+          // Bright head + saturated green trail.
           ctx.fillStyle=n===0
-            ? `rgba(220,255,226,${fade*.96})`
-            : `rgba(18,170,78,${fade*.86})`;
-          ctx.font=`600 ${col.size}px ui-monospace, SFMono-Regular, Menlo, monospace`;
-          const digit=chars[(Math.floor(now*.012+i*5+n*7+col.phase))%10];
-          ctx.fillText(digit,col.x,yy);
+            ? `rgba(226,255,231,${fade})`
+            : `rgba(0,188,84,${Math.max(.18,fade*.88)})`;
+
+          ctx.font=`700 ${col.size}px ui-monospace, SFMono-Regular, Menlo, monospace`;
+          ctx.fillText(
+            chars[(Math.floor(now*.016+i*7+n*11+col.phase))%10],
+            col.x,
+            yy
+          );
         }
       });
       ctx.restore();
@@ -212,7 +220,9 @@
     content.style.opacity=String(.45+reveal*.55);
     content.style.transform=`translateY(${(1-reveal)*28}px)`;
 
-    section.classList.toggle('is-matrixing',d>.01&&d<.98);
+    section.classList.toggle('is-matrixing',d>.01&&d<.995);
+    // The timing/hold is unchanged. Once the timeline phase is reached,
+    // the sticky stage is visually removed so it cannot cover the timeline.
     section.classList.toggle('is-timeline',d>=.94);
 
     if(!reduced) requestAnimationFrame(render);
@@ -223,18 +233,41 @@
   resize(); updateProgress(); render(performance.now());
 })();
 
-// Header reveal.
+// Header reveal — strict visibility contract:
+// hidden on the hero and for the complete Experience sequence/timeline;
+// visible only after the Experience section has been fully passed.
 (() => {
   const header=document.querySelector('.site-header[data-reveal-on-scroll]');
-  if(!header) return;
-  const update=()=>{
-    const visible=scrollY>120;
-    header.classList.toggle('is-visible',visible);
-    header.querySelectorAll('a').forEach(a=>{
-      if(visible)a.removeAttribute('tabindex');
-      else a.setAttribute('tabindex','-1');
+  const experience=document.getElementById('experience');
+  if(!header || !experience) return;
+
+  const setInteractive=(visible)=>{
+    header.querySelectorAll('a,button').forEach(el=>{
+      if(visible){
+        if(el.dataset.prevTabindex !== undefined){
+          if(el.dataset.prevTabindex === '') el.removeAttribute('tabindex');
+          else el.setAttribute('tabindex',el.dataset.prevTabindex);
+          delete el.dataset.prevTabindex;
+        }
+      }else{
+        if(el.dataset.prevTabindex === undefined){
+          el.dataset.prevTabindex=el.getAttribute('tabindex') || '';
+        }
+        el.setAttribute('tabindex','-1');
+      }
     });
   };
+
+  const update=()=>{
+    const rect=experience.getBoundingClientRect();
+    // Header appears only after the bottom of Experience has moved above
+    // the viewport. This keeps it fully hidden on the hero AND timeline.
+    const visible=rect.bottom<=0;
+    header.classList.toggle('is-visible',visible);
+    setInteractive(visible);
+  };
+
   addEventListener('scroll',update,{passive:true});
+  addEventListener('resize',update,{passive:true});
   update();
 })();
