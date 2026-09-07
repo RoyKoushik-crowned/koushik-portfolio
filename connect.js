@@ -17,6 +17,58 @@
   });
 })();
 
+// ---------- Scroll past a card to open its real profile (new tab) ----------
+// Note: browsers only allow window.open() without a click/tap ("user activation")
+// in some cases — scroll alone doesn't reliably count. So this tries to open
+// automatically when the gesture completes, and always falls back to visibly
+// arming the "View full profile" button so a tap finishes the job either way.
+(function () {
+  const triggers = document.querySelectorAll('[data-scroll-open]');
+  if (!triggers.length) return;
+
+  const THRESHOLD = 240; // px of continued scroll, once the card's top crosses the trigger line, before opening
+
+  const items = Array.from(triggers).map((el) => ({
+    el,
+    card: el.closest('.connect-card'),
+    url: el.dataset.openUrl,
+    fill: el.querySelector('.scroll-open-fill'),
+    label: el.querySelector('.scroll-open-label'),
+    cta: el.closest('.connect-card').querySelector('.connect-cta'),
+    state: 'idle', // idle | opened
+  }));
+
+  function update() {
+    const triggerLine = window.innerHeight * 0.22;
+    items.forEach((item) => {
+      const rect = item.card.getBoundingClientRect();
+      if (rect.top >= triggerLine) {
+        item.state = 'idle';
+        item.fill.style.width = '0%';
+        item.el.classList.remove('is-armed');
+        item.cta.classList.remove('is-ready');
+        return;
+      }
+      if (item.state === 'opened') return;
+
+      const overshoot = triggerLine - rect.top;
+      const progress = Math.max(0, Math.min(1, overshoot / THRESHOLD));
+      item.fill.style.width = `${progress * 100}%`;
+      item.el.classList.toggle('is-armed', progress > 0.05);
+
+      if (progress >= 1) {
+        item.state = 'opened';
+        item.label.textContent = 'ready — opening, or tap above ↑';
+        item.cta.classList.add('is-ready');
+        window.open(item.url, '_blank', 'noopener');
+      }
+    });
+  }
+
+  window.addEventListener('scroll', update, { passive: true });
+  update();
+})();
+
 // ---------- GitHub preview: live fetch ----------
 (function () {
   const body = document.querySelector('.gh-body');

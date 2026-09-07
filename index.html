@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Koushik Roy — Backend Engineer, Applied ML & LLM Systems</title>
-<meta name="description" content="Portfolio of Koushik Roy — backend engineering, async pipelines, and LLM-powered systems.">
+<title>Koushik Roy — Backend &amp; AI/ML Engineer</title>
+<meta name="description" content="Portfolio of Koushik Roy — backend engineering, agentic AI systems, and LLM-powered pipelines.">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,14 +15,15 @@
 
 <a class="skip-link" href="#main">Skip to content</a>
 
-<header class="site-header">
+<header class="site-header" data-reveal-on-scroll>
   <div class="wrap header-inner">
     <a class="wordmark" href="#top">KR</a>
     <nav class="site-nav" aria-label="Primary">
       <a href="#experience">Experience</a>
-      <a href="#projects">Projects</a>
+      <a href="projects.html">Projects</a>
       <a href="#skills">Skills</a>
       <a href="#achievements">Achievements</a>
+      <a href="beyond.html">Beyond</a>
       <a href="connect.html">Connect</a>
     </nav>
   </div>
@@ -31,111 +32,105 @@
 <main id="main">
 
   <!-- HERO -->
-  <section id="top" class="hero wrap">
-    <div class="hero-text">
-      <p class="hero-kicker">Koushik Roy</p>
-      <h1>Backend engineer for systems that don't fall over<br>when the load shows up.</h1>
-      <p class="hero-sub">I build async pipelines, RAG and LLM-classification systems, and the AWS
-      infrastructure underneath them — currently doing this at Cognizant Technology Solutions.</p>
+  <section id="top" class="hero hero--cloth cloth-host">
+    <canvas class="cloth-canvas" data-density="10" aria-hidden="true"></canvas>
+    <div class="hero-inner wrap">
+      <p class="hero-kicker">Backend &amp; AI/ML Engineer — LLM Agents, RAG &amp; Production Systems</p>
+      <h1 class="hero-name">Koushik<br>Roy</h1>
+      <p class="hero-sub">I build async pipelines, multi-step LLM agents, and the AWS infrastructure
+      underneath them — currently doing this as a Programmer Analyst at Cognizant Technology Solutions.</p>
       <div class="hero-actions">
-        <a class="btn btn-primary" href="#projects">See the work</a>
-        <a class="btn btn-ghost" href="mailto:royeren00@gmail.com">Get in touch</a>
+        <a class="btn btn-primary" href="projects.html">See the work</a>
+        <div class="contact-trigger-wrap">
+          <button class="btn btn-ghost" id="contact-trigger" aria-haspopup="true" aria-expanded="false">Get in touch</button>
+          <div class="contact-menu" id="contact-menu" hidden>
+            <a class="contact-option" id="contact-email" href="#" target="_blank" rel="noopener">
+              <span class="contact-option-label">Email</span>
+              <span class="contact-option-sub">Opens a new Gmail draft to me</span>
+            </a>
+            <a class="contact-option" id="contact-whatsapp" href="#" target="_blank" rel="noopener">
+              <span class="contact-option-label">Message</span>
+              <span class="contact-option-sub">Opens WhatsApp with my number</span>
+            </a>
+            <a class="contact-option" href="https://www.linkedin.com/in/-roykoushik" target="_blank" rel="noopener">
+              <span class="contact-option-label">LinkedIn</span>
+              <span class="contact-option-sub">Message me there instead</span>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="hero-visual" aria-hidden="true">
-      <svg id="pipeline-svg" viewBox="0 0 420 320" width="100%" height="100%">
-        <!-- populated / animated by script.js -->
-      </svg>
-      <p class="hero-visual-caption">async job flowing through a worker queue</p>
-    </div>
+    <div data-header-sentinel aria-hidden="true"></div>
   </section>
 
   <!-- EXPERIENCE -->
   <section id="experience" class="section wrap">
     <h2>Experience</h2>
     <ol class="timeline">
+
       <li class="timeline-item">
         <div class="timeline-when">
-          <span class="timeline-date">Dec 2023 — May 2026</span>
+          <span class="timeline-date">Nov 2024 — May 2026</span>
           <span class="timeline-place">Cognizant Technology Solutions, Kolkata</span>
         </div>
         <div class="timeline-body">
           <h3>Programmer Analyst</h3>
           <ul>
-            <li>Owned the full lifecycle of 35+ enhancements — ideation through deployment and maintenance — lifting system performance by 60%.</li>
-            <li>Fine-tuned sentence-transformer NLP classification models, cutting manual correspondence-processing effort by 40% across teams.</li>
-            <li>Applied AWS IAM and RBAC to enforce clearance-based access control.</li>
-            <li>Worked as the liaison between clients and cross-functional teams, gathering requirements that earned direct client appreciation.</li>
-            <li>Deployed containerized services with Docker and Kubernetes, scaling workloads to match traffic.</li>
-            <li>Automated backend workflows and custom MySQL queries, cutting manual effort by 30% and improving processing performance by 60%.</li>
-            <li>Coordinated release and defect tracking in Jira and Confluence across development and client teams.</li>
-            <li>Ran workshops that shortened new-developer onboarding from 6 weeks to 3.</li>
+            <li>Engineered Python backend services and REST APIs for enterprise trade-monitoring systems, delivering 35+ enhancements across 10 Agile sprints.</li>
+            <li>Fine-tuned LLM-based NLP models for correspondence classification, cutting manual overhead by 40% across cross-functional teams.</li>
+            <li>Developed 5 React front-end components integrated with REST APIs, enabling 200+ users to manage enterprise monitoring workflows.</li>
+            <li>Applied AWS IAM and RBAC controls and extended support for production incidents.</li>
+            <li>Used Jira and Confluence to track and log releases and bugs, and to manage user stories.</li>
+            <li>Onboarded junior developers and held sessions for code review and deployment.</li>
           </ul>
         </div>
       </li>
+
+      <li class="timeline-item">
+        <div class="timeline-when">
+          <span class="timeline-date">Dec 2023 — Oct 2024</span>
+          <span class="timeline-place">Cognizant Technology Solutions, Hyderabad</span>
+        </div>
+        <div class="timeline-body">
+          <h3>Programmer Analyst Trainee</h3>
+          <ul>
+            <li>Built an NLP classification-based validation framework that identified and rectified 50% of recurring defects, improving system reliability.</li>
+            <li>Deployed Python services with Docker and Kubernetes, scaling and de-scaling workloads based on traffic for users ranging in the high thousands.</li>
+            <li>Automated Python backend workflows, cutting manual effort by 30% and shortening enterprise processing cycles.</li>
+            <li>Improved backend performance by 20% through query optimization, system profiling, and algorithmic improvements.</li>
+            <li>Resolved post-deployment defects across enterprise applications.</li>
+          </ul>
+        </div>
+      </li>
+
     </ol>
   </section>
 
-  <!-- PROJECTS -->
+  <!-- PROJECTS TEASER -->
   <section id="projects" class="section wrap">
     <h2>Projects</h2>
-    <p class="section-lede">A quick glance at how each system moves, alongside what it does.</p>
+    <p class="section-lede">Six shipped projects and one published paper — <a href="projects.html">see the full page</a> for
+    demos, numbers, and how each one actually works.</p>
 
-    <div class="project-grid">
-
-      <article class="project-card" data-demo="pipeline">
-        <div class="project-demo" data-widget="pipeline-demo" aria-hidden="true"></div>
-        <div class="project-copy">
-          <h3>Async Product Photo Processing at Scale</h3>
-          <p class="project-year">2026</p>
-          <p>An asynchronous FastAPI, Redis, and Pillow pipeline that decouples image processing from
-          uploads. Under load testing, worker pods scale from 4 to 15 automatically to absorb demand.</p>
-          <ul class="project-tags">
-            <li>FastAPI</li><li>Redis</li><li>Pillow</li><li>Docker</li><li>Kubernetes</li>
-          </ul>
-        </div>
-      </article>
-
-      <article class="project-card" data-demo="classifier">
-        <div class="project-demo" data-widget="classifier-demo" aria-hidden="true"></div>
-        <div class="project-copy">
-          <h3>Decision Assist System for Patients</h3>
-          <p class="project-year">2023 · IEEE INOCON</p>
-          <p>A clinical decision-support framework using bagging and boosting ensemble models,
-          evaluated for classification performance, explainability, and demographic fairness.</p>
-          <ul class="project-tags">
-            <li>Scikit-learn</li><li>Ensemble Models</li><li>Explainability</li>
-          </ul>
-        </div>
-      </article>
-
-      <article class="project-card" data-demo="stocks">
-        <div class="project-demo" data-widget="stocks-demo" aria-hidden="true"></div>
-        <div class="project-copy">
-          <h3>Real-Time Stock Monitoring Dashboard</h3>
-          <p class="project-year">2022</p>
-          <p>A React and PostgreSQL dashboard backed by ARIMA, LSTM, and GRU models for
-          stock-price forecasting and live market monitoring.</p>
-          <ul class="project-tags">
-            <li>React</li><li>REST API</li><li>PostgreSQL</li><li>LSTM</li><li>GRU</li>
-          </ul>
-        </div>
-      </article>
-
-      <article class="project-card project-card--static">
-        <div class="project-copy">
-          <h3>Insurance Management System (QBE)</h3>
-          <p class="project-year">2023</p>
-          <p>An NLP-based validation framework that cut manual overhead by 70% by catching recurring
-          defects, plus an automated fallback that re-ingests failed records after queue-processor
-          failures — cutting manual effort by a further 50%.</p>
-          <ul class="project-tags">
-            <li>NLP</li><li>Validation</li><li>Fault Recovery</li>
-          </ul>
-        </div>
-      </article>
-
+    <div class="project-teaser-grid">
+      <a class="project-teaser-card" href="projects.html#async-pipeline">
+        <span class="project-teaser-tag">Backend / Infra</span>
+        <h3>Async Product Photo Processing at Scale</h3>
+        <p>FastAPI + Redis + Kubernetes, autoscaling worker pods 4→15 under load.</p>
+      </a>
+      <a class="project-teaser-card" href="projects.html#growth-pipeline">
+        <span class="project-teaser-tag">LLM / GTM</span>
+        <h3>AI-Agent-Driven Outbound Growth Pipeline</h3>
+        <p>225 leads sourced and qualified end-to-end with Gemini, run twice, zero failed sends.</p>
+      </a>
+      <a class="project-teaser-card" href="projects.html#identity360">
+        <span class="project-teaser-tag">Agentic AI</span>
+        <h3>Identity360 — Agentic Customer Intelligence</h3>
+        <p>A function-calling LLM agent orchestrating retrieval across systems, no framework.</p>
+      </a>
     </div>
+
+    <a class="btn btn-ghost view-all-link" href="projects.html">View all 7 →</a>
   </section>
 
   <!-- SKILLS -->
@@ -146,51 +141,79 @@
     <div class="skills-groups">
 
       <div class="skill-group">
-        <h3>Languages &amp; Frameworks</h3>
+        <h3>Languages</h3>
         <div class="skill-tags">
-          <button class="skill-tag" data-tip="Primary language for backend services, ML pipelines, and automation scripts.">Python</button>
-          <button class="skill-tag" data-tip="Used for schema design, custom queries, and performance tuning in MySQL/PostgreSQL.">SQL</button>
-          <button class="skill-tag" data-tip="Designing and consuming REST endpoints that connect services and frontends.">REST API</button>
-          <button class="skill-tag" data-tip="Frontend scripting for interactive dashboards and dynamic UI behavior.">JavaScript</button>
-          <button class="skill-tag" data-tip="Building dashboard UIs, including the real-time stock monitoring frontend.">React</button>
-          <button class="skill-tag" data-tip="Semantic markup for accessible, structured web pages.">HTML5</button>
-          <button class="skill-tag" data-tip="Styling and layout for responsive, production-ready interfaces.">CSS3</button>
-          <button class="skill-tag" data-tip="Designing classification and support systems end-to-end, from data to deployment.">ML &amp; AI Architecture</button>
+          <button class="skill-tag" data-tip="Primary language for backend services, ML pipelines, and automation.">Python</button>
+          <button class="skill-tag" data-tip="Schema design, query optimization, and reporting across MySQL/PostgreSQL.">SQL</button>
+          <button class="skill-tag" data-tip="Used alongside Python in coursework and systems-level projects.">Java</button>
+          <button class="skill-tag" data-tip="Used alongside Python in coursework and systems-level projects.">C / C++</button>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <h3>Machine Learning &amp; Deep Learning</h3>
+        <div class="skill-tags">
+          <button class="skill-tag" data-tip="Model training and evaluation for the CNN-based facial recognition system.">PyTorch</button>
+          <button class="skill-tag" data-tip="Used for model training/evaluation in applied ML coursework and projects.">TensorFlow</button>
+          <button class="skill-tag" data-tip="Bagging and boosting ensemble models for the IEEE clinical decision-support paper.">Scikit-learn</button>
+          <button class="skill-tag" data-tip="The architecture behind the sentence-transformer models I've fine-tuned.">Transformer Architectures</button>
+          <button class="skill-tag" data-tip="CNN work for facial recognition; feature engineering and benchmarking throughout.">CNNs</button>
+          <button class="skill-tag" data-tip="Data wrangling and numerical computation across every ML project.">Pandas &amp; NumPy</button>
         </div>
       </div>
 
       <div class="skill-group">
         <h3>LLMs &amp; NLP</h3>
         <div class="skill-tags">
-          <button class="skill-tag" data-tip="Retrieval-augmented generation for grounding model outputs in real data.">RAG</button>
-          <button class="skill-tag" data-tip="Vector representations that power semantic search and similarity matching.">Embeddings</button>
-          <button class="skill-tag" data-tip="Finding relevant results by meaning rather than exact keyword match.">Semantic Search</button>
-          <button class="skill-tag" data-tip="The architecture behind the sentence-transformer models I've fine-tuned.">Transformers</button>
-          <button class="skill-tag" data-tip="Orchestrating multi-step, stateful LLM workflows.">LangGraph</button>
+          <button class="skill-tag" data-tip="Grounding model outputs in real data for classification and retrieval tasks.">RAG</button>
+          <button class="skill-tag" data-tip="Vector representations powering semantic search and similarity matching.">Embeddings &amp; FAISS</button>
+          <button class="skill-tag" data-tip="Fine-tuned for correspondence classification in production.">Sentence-Transformers</button>
+          <button class="skill-tag" data-tip="Structured classification prompts for the outbound growth pipeline's Gemini calls.">Prompt Engineering</button>
+          <button class="skill-tag" data-tip="Claude/OpenAI function-calling used directly (no framework) to orchestrate Identity360's agent.">Function-Calling &amp; Tool-Use</button>
+          <button class="skill-tag" data-tip="Used to contextualize outbound emails in the growth pipeline project.">LangGraph / LangChain</button>
         </div>
       </div>
 
       <div class="skill-group">
-        <h3>Tools</h3>
+        <h3>ML Systems &amp; MLOps</h3>
         <div class="skill-tags">
-          <button class="skill-tag" data-tip="Testing and documenting APIs during development.">Postman</button>
-          <button class="skill-tag" data-tip="Managing user stories, sprints, and defect tracking.">JIRA</button>
-          <button class="skill-tag" data-tip="Documentation and knowledge sharing across client and dev teams.">Confluence</button>
-          <button class="skill-tag" data-tip="Version control for every project in this portfolio.">Git</button>
-          <button class="skill-tag" data-tip="Pair-programming assistant for faster iteration and code review.">GitHub Copilot</button>
-          <button class="skill-tag" data-tip="The assistant I use for design review, debugging, and drafting docs.">Claude</button>
+          <button class="skill-tag" data-tip="Producer/queue/consumer pipelines that decouple slow work from user-facing requests.">Production ML Pipelines</button>
+          <button class="skill-tag" data-tip="Container orchestration with liveness/readiness probes and autoscaling.">Kubernetes</button>
+          <button class="skill-tag" data-tip="Multi-stage, non-root container builds for every deployed service.">Docker</button>
+          <button class="skill-tag" data-tip="Automated build/test pipelines for personal projects.">GitHub Actions CI/CD</button>
+          <button class="skill-tag" data-tip="Job queue and caching layer behind the async image pipeline.">Redis</button>
         </div>
       </div>
 
       <div class="skill-group">
-        <h3>Infrastructure &amp; Practice</h3>
+        <h3>Cloud &amp; Data Engineering</h3>
         <div class="skill-tags">
           <button class="skill-tag" data-tip="Container orchestration, storage, and clearance-based access control (ECS, S3, IAM/RBAC).">AWS</button>
-          <button class="skill-tag" data-tip="Backend runtime for services and tooling outside of Python.">Node.js</button>
+          <button class="skill-tag" data-tip="Relational data store behind the stock dashboard and Identity360.">PostgreSQL</button>
+          <button class="skill-tag" data-tip="Large-scale data processing for ML feature pipelines.">PySpark</button>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <h3>Backend &amp; Software Engineering</h3>
+        <div class="skill-tags">
+          <button class="skill-tag" data-tip="Async API framework behind the image-processing pipeline.">FastAPI</button>
+          <button class="skill-tag" data-tip="Designing and consuming REST endpoints that connect services and frontends.">REST APIs</button>
+          <button class="skill-tag" data-tip="Backend runtime for services outside of Python.">Node.js</button>
+          <button class="skill-tag" data-tip="Frontend for the stock dashboard and the Identity360 platform.">React</button>
+          <button class="skill-tag" data-tip="Version control for every project in this portfolio.">Git &amp; GitHub</button>
           <button class="skill-tag" data-tip="Sprint planning and iterative delivery across cross-functional teams.">Agile SDLC</button>
-          <button class="skill-tag" data-tip="Structured peer review to catch issues before they ship.">Code Reviews</button>
-          <button class="skill-tag" data-tip="Test suites that catch regressions before they reach clients.">Automated Testing</button>
-          <button class="skill-tag" data-tip="Software Testing Life Cycle — structured, repeatable QA process.">STLC</button>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <h3>Growth / GTM Engineering</h3>
+        <div class="skill-tags">
+          <button class="skill-tag" data-tip="LLM calls for lead qualification against a written rubric in the growth pipeline.">Google Gemini API</button>
+          <button class="skill-tag" data-tip="Sourcing candidate leads by search in the outbound growth pipeline.">GitHub REST API</button>
+          <button class="skill-tag" data-tip="Cooldown-aware retries and circuit breakers built after a real production bug.">Rate-Limit-Aware Retries</button>
+          <button class="skill-tag" data-tip="Automated email sequencing with synthetic-alias routing and a dry-run gate.">Mailtrap API</button>
+          <button class="skill-tag" data-tip="Deployed a proxy + embeddable widget exposing an API safely to client-side use.">Vercel Functions</button>
         </div>
       </div>
 
@@ -201,9 +224,10 @@
   <section id="achievements" class="section wrap">
     <h2>Achievements &amp; Certifications</h2>
     <ul class="achievements-list">
+      <li>PEGA CSSA Certified.</li>
       <li>Coursera certified in Neural Networks &amp; Deep Learning, and Python.</li>
       <li>4-star proficiency rating in Java and AI on HackerRank.</li>
-      <li>Delivered 5 production deployments across 2 enterprise projects, recognized by the client for on-time delivery.</li>
+      <li>Delivered 5 production deployments across 2 enterprise projects, recognized by the client for on-time, bug-free delivery.</li>
     </ul>
 
     <h2 class="education-heading">Education</h2>
@@ -223,11 +247,11 @@
 
 </main>
 
-<footer id="contact" class="site-footer">
+<footer class="site-footer">
   <div class="wrap footer-inner">
     <div>
       <p class="footer-name">Koushik Roy</p>
-      <p class="footer-tag">Backend Engineer — Applied ML &amp; LLM Systems</p>
+      <p class="footer-tag">Backend &amp; AI/ML Engineer — LLM Agents &amp; Production Systems</p>
     </div>
     <div class="footer-links">
       <a href="mailto:royeren00@gmail.com">royeren00@gmail.com</a>
@@ -240,6 +264,8 @@
 
 <div id="tooltip-bubble" class="tooltip-bubble" role="tooltip"></div>
 
+<script src="cloth.js"></script>
+<script src="contact.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

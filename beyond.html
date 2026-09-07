@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beyond — Koushik Roy</title>
+<meta name="description" content="Koushik Roy, apart from computers: photos, music, and interests.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="wordmark" href="index.html">KR</a>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="index.html#experience">Experience</a>
+      <a href="projects.html">Projects</a>
+      <a href="index.html#skills">Skills</a>
+      <a href="index.html#achievements">Achievements</a>
+      <a href="beyond.html" aria-current="page">Beyond</a>
+      <a href="connect.html">Connect</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="beyond-intro cloth-host">
+    <canvas class="cloth-canvas" data-density="6" aria-hidden="true"></canvas>
+    <div class="wrap beyond-intro-inner">
+      <p class="hero-kicker">Off the clock</p>
+      <h1>Who I am, apart from computers.</h1>
+      <p class="hero-sub">Photos, what I've had on repeat, and a few things I'd talk about even if
+      you took the job title away.</p>
+    </div>
+  </section>
+
+  <!--
+    EDITING NOTE (delete this comment once filled in):
+    Everything in this page is a placeholder scaffold. Replace:
+    1. The <div class="photo-tile"> placeholders below with real <img> tags
+       (drop image files into a /photos folder next to this HTML file).
+    2. The "Add your..." rows in the Music section with real artists/tracks.
+    3. The interest chips with whatever you'd actually want to talk about.
+  -->
+
+  <section id="photos" class="section wrap">
+    <h2>Photos</h2>
+    <p class="section-lede">A few frames from outside of work. Click any tile to view it larger.</p>
+
+    <div class="photo-grid" id="photo-grid">
+      <button class="photo-tile" data-caption="Add a photo — replace this tile with an &lt;img&gt;">
+        <span class="photo-tile-icon">＋</span>
+        <span class="photo-tile-label">Add a photo</span>
+      </button>
+      <button class="photo-tile" data-caption="Add a photo — replace this tile with an &lt;img&gt;">
+        <span class="photo-tile-icon">＋</span>
+        <span class="photo-tile-label">Add a photo</span>
+      </button>
+      <button class="photo-tile" data-caption="Add a photo — replace this tile with an &lt;img&gt;">
+        <span class="photo-tile-icon">＋</span>
+        <span class="photo-tile-label">Add a photo</span>
+      </button>
+      <button class="photo-tile" data-caption="Add a photo — replace this tile with an &lt;img&gt;">
+        <span class="photo-tile-icon">＋</span>
+        <span class="photo-tile-label">Add a photo</span>
+      </button>
+      <button class="photo-tile" data-caption="Add a photo — replace this tile with an &lt;img&gt;">
+        <span class="photo-tile-icon">＋</span>
+        <span class="photo-tile-label">Add a photo</span>
+      </button>
+      <button class="photo-tile" data-caption="Add a photo — replace this tile with an &lt;img&gt;">
+        <span class="photo-tile-icon">＋</span>
+        <span class="photo-tile-label">Add a photo</span>
+      </button>
+    </div>
+  </section>
+
+  <section id="music" class="section wrap">
+    <h2>On repeat</h2>
+    <p class="section-lede">What's actually been playing lately — edit this list to match reality.</p>
+
+    <ul class="music-list">
+      <li class="music-row">
+        <span class="music-index">01</span>
+        <div class="music-meta">
+          <span class="music-track">Add a track</span>
+          <span class="music-artist">Add the artist</span>
+        </div>
+        <span class="music-genre">genre</span>
+      </li>
+      <li class="music-row">
+        <span class="music-index">02</span>
+        <div class="music-meta">
+          <span class="music-track">Add a track</span>
+          <span class="music-artist">Add the artist</span>
+        </div>
+        <span class="music-genre">genre</span>
+      </li>
+      <li class="music-row">
+        <span class="music-index">03</span>
+        <div class="music-meta">
+          <span class="music-track">Add a track</span>
+          <span class="music-artist">Add the artist</span>
+        </div>
+        <span class="music-genre">genre</span>
+      </li>
+      <li class="music-row">
+        <span class="music-index">04</span>
+        <div class="music-meta">
+          <span class="music-track">Add a track</span>
+          <span class="music-artist">Add the artist</span>
+        </div>
+        <span class="music-genre">genre</span>
+      </li>
+    </ul>
+  </section>
+
+  <section id="interests" class="section wrap">
+    <h2>Outside of work</h2>
+    <p class="section-lede">A few things worth asking about.</p>
+
+    <div class="interest-chips">
+      <span class="interest-chip">Add an interest</span>
+      <span class="interest-chip">Add an interest</span>
+      <span class="interest-chip">Add an interest</span>
+      <span class="interest-chip">Add an interest</span>
+      <span class="interest-chip">Add an interest</span>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <div>
+      <p class="footer-name">Koushik Roy</p>
+      <p class="footer-tag">Backend &amp; AI/ML Engineer — LLM Agents &amp; Production Systems</p>
+    </div>
+    <div class="footer-links">
+      <a href="mailto:royeren00@gmail.com">royeren00@gmail.com</a>
+      <a href="tel:9085604484">908-560-4484</a>
+      <a href="https://www.linkedin.com/in/-roykoushik" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://github.com/RoyKoushik-crowned" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+<div class="photo-lightbox" id="photo-lightbox" hidden>
+  <button class="photo-lightbox-close" id="photo-lightbox-close" aria-label="Close">✕</button>
+  <div class="photo-lightbox-body" id="photo-lightbox-body"></div>
+</div>
+
+<script src="cloth.js"></script>
+<script src="beyond.js"></script>
+</body>
+</html>
