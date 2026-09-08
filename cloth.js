@@ -58,6 +58,11 @@
       this.sheenPhase = 0;
       this.sheenVelocity = 0;
 
+      // The cloth always has a direction of travel. Scrolling reverses it,
+      // and the last chosen direction remains active after scrolling stops.
+      this.flowDirection = 1;
+      this.targetFlowDirection = 1;
+
       this._burstUntil = 0;
       this._burstCooldownUntil = 0;
 
@@ -111,11 +116,21 @@
       const now = performance.now();
       const deltaY = y - this.lastScrollY;
       const elapsed = Math.max(8, now - this.lastScrollTime);
-      const velocity = deltaY / elapsed;
 
-      // Strong directional gust: down = left → right, up = right → left.
-      this.targetScrollVelocity = Math.max(-4.5, Math.min(4.5, velocity * 3.2));
-      this.flowPhase += deltaY * 0.135;
+      if (Math.abs(deltaY) > 0.1) {
+        const velocity = deltaY / elapsed;
+
+        // Scroll still gives the cloth a temporary extra gust.
+        this.targetScrollVelocity = Math.max(
+          -4.5,
+          Math.min(4.5, velocity * 3.2)
+        );
+
+        // Down = persistent left → right flow.
+        // Up = persistent right → left flow.
+        this.targetFlowDirection = deltaY > 0 ? 1 : -1;
+      }
+
       this.lastScrollY = y;
       this.lastScrollTime = now;
     }
@@ -326,19 +341,36 @@
       this.time += dts;
 
       // Smooth strong scroll impulses and let them decay naturally.
-      this.scrollVelocity += (this.targetScrollVelocity - this.scrollVelocity) * Math.min(1, dts * 12);
+      this.scrollVelocity +=
+        (this.targetScrollVelocity - this.scrollVelocity) *
+        Math.min(1, dts * 12);
       this.targetScrollVelocity *= Math.pow(0.88, dts * 60);
 
-      // Light streaks follow the same directional energy as the wind.
-      // Down-scroll (positive) = left → right.
-      // Up-scroll (negative) = right → left.
-      this.sheenVelocity +=
-        (this.scrollVelocity - this.sheenVelocity) * Math.min(1, dts * 10);
-      this.sheenPhase += (this.sheenVelocity * 230 + 22) * dts;
+      // Smoothly reverse direction when the user scrolls the other way.
+      // Once scrolling stops, this direction remains active.
+      this.flowDirection +=
+        (this.targetFlowDirection - this.flowDirection) *
+        Math.min(1, dts * 4.5);
 
-      // the cloth always drifts gently on its own, and scrolling adds to
-      // the same phase so the waves visibly flow along with the page
-      if (!settle) this.flowPhase += dts * 0.5;
+      // Constant baseline flow keeps the cloth alive even when the page is
+      // completely still. Scrolling temporarily adds more speed.
+      const constantFlowSpeed = 0.82;
+      const scrollFlowBoost = Math.min(
+        1.35,
+        Math.abs(this.scrollVelocity) * 0.32
+      );
+      const directedFlowSpeed =
+        this.flowDirection * (constantFlowSpeed + scrollFlowBoost);
+
+      // Light streaks continuously travel with the cloth and keep moving
+      // after scrolling stops in the last selected direction.
+      this.sheenVelocity +=
+        (directedFlowSpeed - this.sheenVelocity) *
+        Math.min(1, dts * 5.5);
+      this.sheenPhase += this.sheenVelocity * 58 * dts;
+
+      // The physical wave phase also constantly travels in that direction.
+      if (!settle) this.flowPhase += directedFlowSpeed * 0.72 * dts;
 
       const windPhase = this.time * 0.9;
       const flow = this.flowPhase;
@@ -372,7 +404,14 @@
           0.45 + 0.55 * Math.sin(windPhase * 0.75 + p.r * 0.18 - p.c * 0.08 - flow * 0.12)
         );
 
-        const wind = ambientWind + scrollWind;
+        // Constant directional wind keeps the fabric physically flowing
+        // at all times. Scroll only changes/amplifies the direction.
+        const constantWind =
+          this.flowDirection *
+          this.windBase *
+          (this.fixed ? 0.34 : 0.20);
+
+        const wind = ambientWind + scrollWind + constantWind;
 
         // gentle pointer-proximity push (works even without grabbing)
         let pushX = 0, pushY = 0;
