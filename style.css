@@ -2572,3 +2572,47 @@ main::before{
 }
 .hero-editorial-art:hover .hero-konami-clue{ color:rgba(232,236,244,0.58); transform:translateX(2px); }
 @media (max-width:620px){ .hero-konami-clue{ font-size:0.52rem; letter-spacing:0.1em; margin-top:10px; } }
+
+
+/* ==========================================================
+   V6 — FULL-PAGE SILK FIELD
+   The hero keeps the interactive cloth. Everywhere else uses the same
+   cloth engine as a wind/light-only ambient field.
+   ========================================================== */
+#site-silk-canvas{
+  z-index:0 !important;
+  opacity:1 !important;
+  mix-blend-mode:normal !important;
+  filter:saturate(1.08) contrast(1.03);
+}
+
+/* Let the moving folds and light streaks remain visible across the page. */
+main::before{
+  background:linear-gradient(90deg,
+    rgba(255,250,245,.08),
+    rgba(255,247,239,.035) 50%,
+    rgba(255,250,246,.07)) !important;
+}
+
+.section:not(.experience-section)::before{
+  background:rgba(255,249,243,.22) !important;
+  border-color:rgba(255,255,255,.30) !important;
+}
+
+/* Keep individual content cards readable while the page itself stays silk-led. */
+.project-teaser-card,
+.project-card,
+.project-full,
+.project-full-demo,
+.connect-card,
+.photo-tile{
+  background:rgba(255,249,243,.64) !important;
+}
+
+/* The hero is the only interactive cloth surface. */
+.hero--cloth .cloth-canvas{
+  pointer-events:auto !important;
+}
+#site-silk-canvas{
+  pointer-events:none !important;
+}

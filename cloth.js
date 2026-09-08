@@ -22,6 +22,10 @@
         [234, 130, 56], [247, 177, 108], [255, 219, 182]
       ];
       this.baseAlpha = opts.alpha ?? 0.85;
+      this.renderAlphaMul = opts.renderAlphaMul ?? (this.fixed ? 0.55 : 1);
+      this.sheenStrength = opts.sheenStrength ?? (this.fixed ? 0.1 : 0.18);
+      this.sheenCount = opts.sheenCount ?? 5;
+      this.sheenWidth = opts.sheenWidth ?? 1;
       this.gravity = opts.gravity ?? 620;
       this.windBase = opts.windBase ?? 260;
       this.pointSpacing = opts.pointSpacing ?? 30;
@@ -48,6 +52,12 @@
       this.scrollVelocity = 0;
       this.targetScrollVelocity = 0;
       this.lastScrollTime = performance.now();
+
+      // Dedicated light-streak phase. Positive scroll velocity moves the
+      // streaks left → right; negative velocity moves them right → left.
+      this.sheenPhase = 0;
+      this.sheenVelocity = 0;
+
       this._burstUntil = 0;
       this._burstCooldownUntil = 0;
 
@@ -319,6 +329,13 @@
       this.scrollVelocity += (this.targetScrollVelocity - this.scrollVelocity) * Math.min(1, dts * 12);
       this.targetScrollVelocity *= Math.pow(0.88, dts * 60);
 
+      // Light streaks follow the same directional energy as the wind.
+      // Down-scroll (positive) = left → right.
+      // Up-scroll (negative) = right → left.
+      this.sheenVelocity +=
+        (this.scrollVelocity - this.sheenVelocity) * Math.min(1, dts * 10);
+      this.sheenPhase += (this.sheenVelocity * 230 + 22) * dts;
+
       // the cloth always drifts gently on its own, and scrolling adds to
       // the same phase so the waves visibly flow along with the page
       if (!settle) this.flowPhase += dts * 0.5;
@@ -487,7 +504,7 @@
       if (flashing) ctx.filter = 'invert(1) saturate(2.4) brightness(1.25)';
 
       const at = (r, c) => this.points[r * this.cols + c];
-      const alphaMul = this.fixed ? 0.55 : 1;
+      const alphaMul = this.renderAlphaMul;
 
       for (let r = 0; r < this.rows - 1; r++) {
         for (let c = 0; c < this.cols - 1; c++) {
@@ -516,16 +533,65 @@
         }
       }
 
-      // subtle animated sheen bands, like light sweeping across silk folds
+      // Directional light streaks. Broad diagonal highlights sweep across
+      // the cloth in the same direction as scroll-driven wind:
+      // scroll down → left → right; scroll up → right → left.
       ctx.save();
-      ctx.globalAlpha = (this.fixed ? 0.1 : 0.18) + Math.sin(this.time * 0.6) * 0.04;
-      ctx.strokeStyle = 'rgba(255,248,239,.9)';
-      ctx.lineWidth = 1;
-      for (let r = 1; r < this.rows - 1; r += Math.max(2, Math.round(this.rows / 5))) {
+      ctx.globalCompositeOperation = 'screen';
+
+      const streakSpan = Math.max(this.w * 0.58, 520);
+      const streakGap = Math.max(this.w * 0.36, 300);
+      const cycle = streakSpan + streakGap;
+      const directionEnergy = Math.min(1, Math.abs(this.sheenVelocity) * 1.8);
+      const streakAlpha =
+        this.sheenStrength * (0.78 + directionEnergy * 0.95);
+
+      ctx.globalAlpha = Math.min(0.68, streakAlpha);
+
+      for (let i = -2; i <= this.sheenCount; i++) {
+        const rawX =
+          ((this.sheenPhase + i * cycle) % cycle + cycle) % cycle - streakSpan;
+
+        const slant = (i % 2 === 0 ? 1 : -1) * Math.max(80, this.h * 0.22);
+
+        const gradient = ctx.createLinearGradient(
+          rawX - streakSpan * 0.5, 0,
+          rawX + streakSpan * 1.5, 0
+        );
+        gradient.addColorStop(0, 'rgba(255,248,239,0)');
+        gradient.addColorStop(0.30, 'rgba(255,248,239,0.02)');
+        gradient.addColorStop(0.50, 'rgba(255,252,244,0.95)');
+        gradient.addColorStop(0.70, 'rgba(255,248,239,0.03)');
+        gradient.addColorStop(1, 'rgba(255,248,239,0)');
+
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.moveTo(rawX - streakSpan * 0.25, 0);
+        ctx.lineTo(rawX + streakSpan * 0.75, 0);
+        ctx.lineTo(rawX + streakSpan * 1.10 + slant, this.h);
+        ctx.lineTo(rawX + slant - streakSpan * 0.10, this.h);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      // Fine highlights still follow actual cloth folds, preserving the
+      // physical silk texture underneath the larger travelling streaks.
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.globalAlpha =
+        this.sheenStrength * 0.38 +
+        Math.sin(this.time * 0.6) * Math.min(0.035, this.sheenStrength * 0.14);
+      ctx.strokeStyle = 'rgba(255,248,239,.96)';
+      ctx.lineWidth = this.sheenWidth;
+      for (
+        let r = 1;
+        r < this.rows - 1;
+        r += Math.max(2, Math.round(this.rows / this.sheenCount))
+      ) {
         ctx.beginPath();
         for (let c = 0; c < this.cols; c++) {
           const p = at(r, c);
-          if (c === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y);
+          if (c === 0) ctx.moveTo(p.x, p.y);
+          else ctx.lineTo(p.x, p.y);
         }
         ctx.stroke();
       }
@@ -548,14 +614,29 @@
   // page (not just the hero) and keeps flowing continuously, direction
   // linked to scroll.
   new ClothSim(document.getElementById('site-silk-canvas'), {
+    // The rest of the site uses the SAME cloth renderer as the hero, but
+    // stays completely ambient: no pointer input, grabbing, tearing or burst
+    // interaction. Motion comes only from wind + scroll-linked wind.
     fixed: true,
     interactive: false,
     pinTop: true,
     blend: 'source-over',
-    alpha: 0.5,
-    gravity: 260,
-    windBase: 280,
-    pointSpacing: 70
+    alpha: 0.88,
+    renderAlphaMul: 0.86,
+    sheenStrength: 0.32,
+    sheenCount: 8,
+    sheenWidth: 1.25,
+    gravity: 0,
+    windBase: 400,
+    pointSpacing: 42,
+    palette: [
+      [92, 25, 5],
+      [145, 43, 7],
+      [192, 70, 12],
+      [232, 112, 39],
+      [255, 181, 110],
+      [255, 222, 184]
+    ]
   });
 
   // Hero flag — anchored on THREE sides (top, left and right), like a
