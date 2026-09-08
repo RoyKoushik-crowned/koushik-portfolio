@@ -825,8 +825,126 @@ body{
   z-index:1;
   opacity:1;
   mix-blend-mode:normal;
-  pointer-events:none;
+  pointer-events:auto;
+  cursor:grab;
 }
+
+/* ---------- Easter egg: cloth tear reveal ---------- */
+.cloth-secret{
+  position:absolute;
+  inset:0;
+  z-index:2;
+  margin:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:clamp(2.4rem, 7vw, 5rem);
+  color:#FFF6E9;
+  text-shadow:0 4px 30px rgba(0,0,0,.55);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .25s ease;
+}
+.cloth-secret.is-revealed{ opacity:1; }
+
+/* ---------- Easter egg: Konami hint, hidden in plain sight ---------- */
+.footer-weave{
+  margin:6px 0 0;
+  font-family:var(--font-mono);
+  font-size:0.62rem;
+  letter-spacing:.14em;
+  color:var(--surface-2);
+  opacity:.55;
+  user-select:none;
+}
+
+/* ---------- Toast (shared by konami + name-click eggs) ---------- */
+.egg-toast{
+  position:fixed;
+  left:50%;
+  bottom:34px;
+  transform:translate(-50%,12px);
+  z-index:2000;
+  background:var(--ink);
+  color:var(--text);
+  border:1px solid var(--border);
+  font-family:var(--font-mono);
+  font-size:0.85rem;
+  padding:10px 18px;
+  border-radius:999px;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .25s ease, transform .25s ease;
+  box-shadow:0 12px 30px rgba(0,0,0,.35);
+}
+.egg-toast.is-visible{
+  opacity:1;
+  transform:translate(-50%,0);
+}
+
+/* ---------- Easter egg: whoami terminal ---------- */
+.whoami-terminal{
+  position:fixed;
+  right:24px;
+  bottom:24px;
+  z-index:2100;
+  width:min(360px, calc(100vw - 48px));
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 24px 60px rgba(0,0,0,.5);
+  opacity:0;
+  transform:translateY(16px) scale(.98);
+  pointer-events:none;
+  transition:opacity .2s ease, transform .2s ease;
+}
+.whoami-terminal.is-open{
+  opacity:1;
+  transform:translateY(0) scale(1);
+  pointer-events:auto;
+}
+.whoami-bar{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 12px;
+  background:var(--surface-2);
+  border-bottom:1px solid var(--border);
+}
+.whoami-dot{
+  width:9px; height:9px; border-radius:50%;
+  background:var(--border);
+}
+.whoami-title{
+  margin-left:6px;
+  font-family:var(--font-mono);
+  font-size:0.72rem;
+  color:var(--text-muted);
+}
+.whoami-body{
+  margin:0;
+  padding:16px;
+  font-family:var(--font-mono);
+  font-size:0.78rem;
+  line-height:1.6;
+  color:var(--amber);
+  white-space:pre-wrap;
+}
+.whoami-close{
+  position:absolute;
+  top:8px; right:10px;
+  background:none;
+  border:0;
+  color:var(--text-muted);
+  font-family:var(--font-mono);
+  font-size:0.7rem;
+  cursor:pointer;
+}
+.whoami-close:hover{ color:var(--text); }
 
 .hero-inner{
   z-index:4;
