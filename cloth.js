@@ -41,10 +41,18 @@
       this.totalStructural = 0;
       this.tornCount = 0;
 
+      // baking real page text onto the cloth mesh, so physics/tears affect it
+      this.textEl = opts.textEl || null;
+      this.textLines = opts.textLines || null;
+      this.textColor = opts.textColor || '#FFF9F4';
+      this.textTexture = null;
+      this.textTriangles = [];
+
       // temporary state for the Konami / burst easter eggs
       this._gravitySign = 1;
       this._konamiTimer = null;
       this._paletteSwap = null;
+      this._burstFlashUntil = 0;
 
       this.resize = this.resize.bind(this);
       this.frame = this.frame.bind(this);
@@ -60,6 +68,9 @@
       if (this.interactive) this.bindPointer();
 
       this.resize();
+      if (this.textEl && document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => this.buildTextTexture());
+      }
       if (reduced) {
         // Settle instantly into a resting pose, then draw once.
         for (let i = 0; i < 60; i++) this.step(16.6, true);
@@ -144,6 +155,7 @@
       this.canvas.style.height = this.h + 'px';
       this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
       this.buildGrid();
+      if (this.textEl) this.buildTextTexture();
     }
 
     buildGrid() {
@@ -163,7 +175,7 @@
           if (this.pins === 'top' && r === 0) pinned = true;
           if (this.pins === 'left' && c === 0) pinned = true;
           if (this.pins === 'top-left' && (r === 0 || c === 0)) pinned = true;
-          this.points.push({ x, y, px: x, py: y, pinned, grabbed: false, r, c });
+          this.points.push({ x, y, px: x, py: y, rx: x, ry: y, pinned, grabbed: false, r, c, _z: 0 });
         }
       }
 
@@ -186,6 +198,94 @@
       this.tornCount = 0;
     }
 
+    // Bakes the (visually-hidden) DOM heading into an offscreen texture in
+    // the cloth's own rest-coordinate space, then caches which mesh
+    // triangles overlap it. Those triangles get the text image warped onto
+    // them each frame using their CURRENT (physics-deformed) positions, so
+    // the name genuinely moves, ripples and tears with the fabric.
+    buildTextTexture() {
+      const el = this.textEl;
+      const canvasRect = this.canvas.getBoundingClientRect();
+      const elRect = el.getBoundingClientRect();
+      const cs = getComputedStyle(el);
+
+      const tex = document.createElement('canvas');
+      tex.width = Math.max(1, Math.round(this.w));
+      tex.height = Math.max(1, Math.round(this.h));
+      const tctx = tex.getContext('2d');
+
+      const fontSize = parseFloat(cs.fontSize);
+      const lineHeight = parseFloat(cs.lineHeight) || fontSize * 1.05;
+      const letterSpacing = cs.letterSpacing && cs.letterSpacing !== 'normal' ? parseFloat(cs.letterSpacing) : 0;
+
+      tctx.font = `${cs.fontWeight} ${fontSize}px ${cs.fontFamily}`;
+      tctx.fillStyle = this.textColor;
+      tctx.textBaseline = 'alphabetic';
+
+      const baseX = elRect.left - canvasRect.left;
+      const baseY = elRect.top - canvasRect.top;
+      const lines = this.textLines || el.innerText.split('\n');
+
+      lines.forEach((line, i) => {
+        const y = baseY + lineHeight * (i + 0.82);
+        if (letterSpacing) {
+          let cx = baseX;
+          for (const ch of line) {
+            tctx.fillText(ch, cx, y);
+            cx += tctx.measureText(ch).width + letterSpacing;
+          }
+        } else {
+          tctx.fillText(line, baseX, y);
+        }
+      });
+
+      this.textTexture = tex;
+
+      // Text bounding box, padded a touch so edge triangles aren't clipped.
+      const pad = fontSize * 0.15;
+      const bx0 = baseX - pad, by0 = baseY - pad;
+      const bx1 = baseX + elRect.width + pad, by1 = baseY + lineHeight * lines.length + pad;
+
+      const at = (r, c) => this.points[r * this.cols + c];
+      this.textTriangles = [];
+      for (let r = 0; r < this.rows - 1; r++) {
+        for (let c = 0; c < this.cols - 1; c++) {
+          const a = at(r, c), b = at(r, c + 1), d = at(r + 1, c), e = at(r + 1, c + 1);
+          const minX = Math.min(a.rx, b.rx, d.rx, e.rx), maxX = Math.max(a.rx, b.rx, d.rx, e.rx);
+          const minY = Math.min(a.ry, b.ry, d.ry, e.ry), maxY = Math.max(a.ry, b.ry, d.ry, e.ry);
+          if (maxX < bx0 || minX > bx1 || maxY < by0 || minY > by1) continue;
+          this.textTriangles.push([a, b, d], [b, e, d]);
+        }
+      }
+    }
+
+    // Affine per-triangle image warp: maps the texture's rest-space (rx,ry)
+    // triangle onto the mesh's current, physics-deformed triangle.
+    drawTexturedTriangle(p1, p2, p3) {
+      const ctx = this.ctx;
+      const u0 = p1.rx, v0 = p1.ry, u1 = p2.rx, v1 = p2.ry, u2 = p3.rx, v2 = p3.ry;
+      const x0 = p1.x, y0 = p1.y, x1 = p2.x, y1 = p2.y, x2 = p3.x, y2 = p3.y;
+
+      const denom = u0 * (v1 - v2) + u1 * (v2 - v0) + u2 * (v0 - v1);
+      if (Math.abs(denom) < 1e-6) return;
+
+      const a = (x0 * (v1 - v2) + x1 * (v2 - v0) + x2 * (v0 - v1)) / denom;
+      const b = (y0 * (v1 - v2) + y1 * (v2 - v0) + y2 * (v0 - v1)) / denom;
+      const c = (x0 * (u2 - u1) + x1 * (u0 - u2) + x2 * (u1 - u0)) / denom;
+      const d = (y0 * (u2 - u1) + y1 * (u0 - u2) + y2 * (u1 - u0)) / denom;
+      const e = (x0 * (u1 * v2 - u2 * v1) + x1 * (u2 * v0 - u0 * v2) + x2 * (u0 * v1 - u1 * v0)) / denom;
+      const f = (y0 * (u1 * v2 - u2 * v1) + y1 * (u2 * v0 - u0 * v2) + y2 * (u0 * v1 - u1 * v0)) / denom;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.lineTo(x2, y2);
+      ctx.closePath();
+      ctx.clip();
+      ctx.transform(a, b, c, d, e, f);
+      ctx.drawImage(this.textTexture, 0, 0);
+      ctx.restore();
+    }
+
     step(dt, settle = false) {
       const dts = Math.min(dt, 34) / 1000;
       this.time += dts;
@@ -195,14 +295,27 @@
       const gustForce = this.fixed ? this.gust * 0.6 : this.gust * 1.4;
 
       for (const p of this.points) {
+        // pseudo-3D fold field, purely for lighting: independent of the 2D
+        // physics position, but nudged by how far the point has actually
+        // been dragged/displaced so folds visibly deepen under interaction.
+        const dxr = p.x - p.rx, dyr = p.y - p.ry;
+        const disp = Math.min(70, Math.hypot(dxr, dyr));
+        p._z = 24 * Math.sin(p.rx * 0.012 + windPhase * 0.7 + p.r * 0.2)
+             + 15 * Math.sin(p.ry * 0.02 - windPhase * 0.55 + p.c * 0.15)
+             + disp * 0.5;
+
         if (p.pinned || p.grabbed) { p.px = p.x; p.py = p.y; continue; }
         const vx = (p.x - p.px) * 0.985;
         const vy = (p.y - p.py) * 0.985;
 
-        // ambient wind: a travelling sine wave across the cloth, plus a
-        // scroll-triggered gust so it reacts like real fabric catching air
-        const wind = this.windBase * (0.35 + 0.65 * Math.sin(windPhase + p.c * 0.35 + p.r * 0.12))
-          + gustForce;
+        // ambient wind: two travelling sine waves at different frequencies
+        // layered together, plus a scroll-triggered gust, so the fabric
+        // catches air in a more organic, less metronomic way
+        const wind = this.windBase * (
+            0.3
+            + 0.45 * Math.sin(windPhase + p.c * 0.35 + p.r * 0.12)
+            + 0.25 * Math.sin(windPhase * 1.7 + p.c * 0.9 - p.r * 0.4)
+          ) + gustForce;
 
         // gentle pointer-proximity push (works even without grabbing)
         let pushX = 0, pushY = 0;
@@ -235,7 +348,7 @@
           const dist = Math.hypot(dx, dy) || 0.0001;
           const ratio = dist / c.len;
 
-          if (this.tearable && !c.shear && ratio > this.tearThreshold) {
+          if (this.tearable && !c.shear && this.mouse.down && ratio > this.tearThreshold) {
             this.constraints.splice(ci, 1);
             this.tornCount++;
             snappedThisStep = true;
@@ -277,40 +390,55 @@
 
     onBurst() {
       // radial shockwave from the canvas center, pushed into each point's
-      // previous position so Verlet integration reads it as outward velocity
+      // previous position so Verlet integration reads it as outward velocity —
+      // strong enough to visibly snap the fabric outward like a popped balloon
       const cx = this.w / 2, cy = this.h / 2;
       for (const p of this.points) {
         if (p.pinned || p.grabbed) continue;
         const dx = p.x - cx, dy = p.y - cy;
         const dist = Math.hypot(dx, dy) || 1;
-        const falloff = Math.max(0, 1 - dist / (Math.max(this.w, this.h) * 0.8));
-        const force = 26 * falloff;
+        const falloff = Math.max(0, 1 - dist / (Math.max(this.w, this.h) * 0.9));
+        const force = 260 * falloff;
         p.px -= (dx / dist) * force;
         p.py -= (dy / dist) * force;
       }
+      this._burstFlashUntil = performance.now() + 260;
     }
 
     triColor(p1, p2, p3, alphaMul) {
-      // fake lighting from how "stretched" / tilted the triangle is —
-      // brighter facets read as catching light, like real fabric folds
-      const ax = p2.x - p1.x, ay = p2.y - p1.y;
-      const bx = p3.x - p1.x, by = p3.y - p1.y;
-      const cross = ax * by - ay * bx;
-      const area = Math.abs(cross);
-      const norm = Math.max(0, Math.min(1, area / (this.stepX * this.stepY * 1.4)));
-      const light = 0.55 + norm * 0.6;
+      // Real directional-light shading using the pseudo-3D fold field (_z):
+      // build the triangle's 3D-ish normal, dot it with a fixed light
+      // direction, and add a sharp specular term for a silky sheen —
+      // this reads as continuous folds instead of flat faceted panels.
+      const ux = p2.x - p1.x, uy = p2.y - p1.y, uz = p2._z - p1._z;
+      const vx = p3.x - p1.x, vy = p3.y - p1.y, vz = p3._z - p1._z;
+      let nx = uy * vz - uz * vy;
+      let ny = uz * vx - ux * vz;
+      let nz = ux * vy - uy * vx;
+      const nlen = Math.hypot(nx, ny, nz) || 1;
+      nx /= nlen; ny /= nlen; nz /= nlen;
+
+      const Lx = -0.45, Ly = -0.55, Lz = 0.7;
+      const diffuse = Math.max(0, nx * Lx + ny * Ly + nz * Lz);
+      const specular = Math.pow(diffuse, 6) * 0.85;
+      const light = 0.34 + diffuse * 0.82 + specular;
+
       const idx = Math.floor(((p1.r + p1.c) * 0.6) % this.palette.length);
       const [R, G, B] = this.palette[idx];
-      const r = Math.min(255, R * light + 255 * (1 - light) * 0.25);
-      const g = Math.min(255, G * light + 255 * (1 - light) * 0.25);
-      const b = Math.min(255, B * light + 255 * (1 - light) * 0.25);
+      const r = Math.min(255, R * light + 255 * specular);
+      const g = Math.min(255, G * light + 255 * specular);
+      const b = Math.min(255, B * light + 255 * specular);
       return `rgba(${r | 0},${g | 0},${b | 0},${this.baseAlpha * alphaMul})`;
     }
 
     render() {
       const ctx = this.ctx;
+      const now = performance.now();
       ctx.clearRect(0, 0, this.w, this.h);
       ctx.globalCompositeOperation = this.blend;
+
+      const flashing = now < this._burstFlashUntil;
+      if (flashing) ctx.filter = 'invert(1) saturate(2.4) brightness(1.25)';
 
       const at = (r, c) => this.points[r * this.cols + c];
       const alphaMul = this.fixed ? 0.55 : 1;
@@ -333,9 +461,16 @@
         }
       }
 
-      // subtle sheen along a couple of bands, like light catching folds
+      // the baked name text, warped per-triangle to follow the fabric
+      if (this.textTexture && this.textTriangles.length) {
+        for (const [p1, p2, p3] of this.textTriangles) {
+          this.drawTexturedTriangle(p1, p2, p3);
+        }
+      }
+
+      // subtle animated sheen bands, like light sweeping across silk folds
       ctx.save();
-      ctx.globalAlpha = this.fixed ? 0.12 : 0.22;
+      ctx.globalAlpha = (this.fixed ? 0.1 : 0.18) + Math.sin(this.time * 0.6) * 0.04;
       ctx.strokeStyle = 'rgba(255,248,239,.9)';
       ctx.lineWidth = 1;
       for (let r = 1; r < this.rows - 1; r += Math.max(2, Math.round(this.rows / 5))) {
@@ -348,6 +483,7 @@
       }
       ctx.restore();
 
+      if (flashing) ctx.filter = 'none';
       ctx.globalCompositeOperation = 'source-over';
     }
 
@@ -374,16 +510,24 @@
 
   // Hero flag — pinned along the left edge like a flag on a pole, hangs
   // and ripples under gravity + wind, and can be grabbed and dragged.
+  // The real "Koushik / Roy" heading is baked onto the fabric itself
+  // (the DOM heading stays for accessibility but is made visually
+  // transparent via CSS), so tearing or dragging the cloth genuinely
+  // distorts and can tear the name apart.
+  const heroNameEl = document.getElementById('hero-name-text');
   document.querySelectorAll('.hero--cloth .cloth-canvas').forEach((c) => {
     new ClothSim(c, {
       interactive: true,
       pins: 'left',
-      blend: 'screen',
-      alpha: 0.95,
+      blend: 'source-over',
+      alpha: 0.97,
       gravity: 560,
       windBase: 320,
+      pointSpacing: 24,
       tearable: true,
       tearThreshold: 2.1,
+      textEl: heroNameEl,
+      textLines: heroNameEl ? ['Koushik', 'Roy'] : null,
       palette: [
         [92, 25, 5], [145, 43, 7], [192, 70, 12],
         [232, 112, 39], [255, 181, 110], [255, 222, 184]

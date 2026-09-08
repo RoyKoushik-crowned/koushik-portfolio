@@ -2543,3 +2543,22 @@ main::before{
   .gear-display{right:6%;top:57%}
   .tach{width:74%;margin-right:15%}
 }
+
+/* ----------------------------------------------------------------
+   V6: hero name is now baked directly onto the cloth mesh so physics
+   and tearing genuinely affect it. The DOM heading stays in place
+   (and in the accessibility tree) but is made visually invisible.
+   Also un-does the earlier screen-blend override, which was washing
+   the fabric out — normal blend keeps the fold shading rich/contrasty.
+   ---------------------------------------------------------------- */
+#hero-name-text{
+  color:transparent !important;
+  text-shadow:none !important;
+}
+.hero--cloth .cloth-canvas{
+  z-index:1 !important;
+  opacity:1 !important;
+  mix-blend-mode:normal !important;
+  pointer-events:auto;
+  cursor:grab;
+}
