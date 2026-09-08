@@ -28,11 +28,22 @@
       const density = parseFloat(canvas.dataset.density) || opts.density || 10;
       this.pointSpacing = this.pointSpacing * (10 / density);
 
-      this.pins = opts.pins || 'top'; // 'top' | 'left' | 'top-left'
+      // Which edges are anchored. The hero flag pins top+left+right (like a
+      // banner mounted on three sides) so it stays fully visible and only
+      // the bottom hem ripples free; the global background pins just the top.
+      this.pinTop = !!opts.pinTop;
+      this.pinLeft = !!opts.pinLeft;
+      this.pinRight = !!opts.pinRight;
+      this.pinBottom = !!opts.pinBottom;
+
       this.mouse = { x: -9999, y: -9999, down: false, grabbed: null, vx: 0, vy: 0, px: -9999, py: -9999 };
       this.w = 1; this.h = 1; this.dpr = 1;
       this.time = 0;
-      this.gust = 0;
+
+      // scroll-linked flow: a phase offset that drifts continuously on its
+      // own (so the cloth is always gently waving) and shifts faster in
+      // whichever direction the page is being scrolled
+      this.flowPhase = 0;
       this.lastScrollY = scrollY;
 
       // tearing (easter egg: pull hard enough on the hero flag to snap threads)
@@ -82,7 +93,9 @@
 
     onScroll() {
       const y = scrollY;
-      this.gust += (y - this.lastScrollY) * 0.9;
+      // scrolling down pushes the wave phase one way, scrolling up the other,
+      // so the fabric visibly flows in the direction of travel
+      this.flowPhase += (y - this.lastScrollY) * 0.045;
       this.lastScrollY = y;
     }
 
@@ -172,9 +185,10 @@
           const x = c * stepX;
           const y = r * stepY;
           let pinned = false;
-          if (this.pins === 'top' && r === 0) pinned = true;
-          if (this.pins === 'left' && c === 0) pinned = true;
-          if (this.pins === 'top-left' && (r === 0 || c === 0)) pinned = true;
+          if (this.pinTop && r === 0) pinned = true;
+          if (this.pinLeft && c === 0) pinned = true;
+          if (this.pinRight && c === this.cols - 1) pinned = true;
+          if (this.pinBottom && r === this.rows - 1) pinned = true;
           this.points.push({ x, y, px: x, py: y, rx: x, ry: y, pinned, grabbed: false, r, c, _z: 0 });
         }
       }
@@ -289,10 +303,13 @@
     step(dt, settle = false) {
       const dts = Math.min(dt, 34) / 1000;
       this.time += dts;
-      if (!settle) this.gust *= 0.92;
+
+      // the cloth always drifts gently on its own, and scrolling adds to
+      // the same phase so the waves visibly flow along with the page
+      if (!settle) this.flowPhase += dts * 0.5;
 
       const windPhase = this.time * 0.9;
-      const gustForce = this.fixed ? this.gust * 0.6 : this.gust * 1.4;
+      const flow = this.flowPhase;
 
       for (const p of this.points) {
         // pseudo-3D fold field, purely for lighting: independent of the 2D
@@ -308,14 +325,15 @@
         const vx = (p.x - p.px) * 0.985;
         const vy = (p.y - p.py) * 0.985;
 
-        // ambient wind: two travelling sine waves at different frequencies
-        // layered together, plus a scroll-triggered gust, so the fabric
-        // catches air in a more organic, less metronomic way
+        // ambient wind: two travelling waves layered together, each phase-
+        // shifted by vertical position and the flow offset, so the ripple
+        // pattern visibly travels down the fabric as you scroll down (and
+        // back up as you scroll up), on top of a constant idle wave
         const wind = this.windBase * (
             0.3
-            + 0.45 * Math.sin(windPhase + p.c * 0.35 + p.r * 0.12)
-            + 0.25 * Math.sin(windPhase * 1.7 + p.c * 0.9 - p.r * 0.4)
-          ) + gustForce;
+            + 0.45 * Math.sin(windPhase + p.c * 0.35 + p.r * 0.12 - flow * 0.8)
+            + 0.25 * Math.sin(windPhase * 1.7 + p.c * 0.9 - p.r * 0.4 - flow * 0.4)
+          );
 
         // gentle pointer-proximity push (works even without grabbing)
         let pushX = 0, pushY = 0;
@@ -496,36 +514,43 @@
   }
 
   // Global ambient background cloth — behind all page content (z-index:-2),
-  // so it stays wind-driven only; there's nothing to grab.
+  // so it stays wind-driven only; there's nothing to grab. Runs on every
+  // page (not just the hero) and keeps flowing continuously, direction
+  // linked to scroll.
   new ClothSim(document.getElementById('site-silk-canvas'), {
     fixed: true,
     interactive: false,
-    pins: 'top',
+    pinTop: true,
     blend: 'source-over',
     alpha: 0.5,
-    gravity: 420,
+    gravity: 260,
     windBase: 200,
     pointSpacing: 70
   });
 
-  // Hero flag — pinned along the left edge like a flag on a pole, hangs
-  // and ripples under gravity + wind, and can be grabbed and dragged.
-  // The real "Koushik / Roy" heading is baked onto the fabric itself
-  // (the DOM heading stays for accessibility but is made visually
-  // transparent via CSS), so tearing or dragging the cloth genuinely
-  // distorts and can tear the name apart.
+  // Hero flag — anchored on THREE sides (top, left and right), like a
+  // banner mounted on a frame, so the full "Koushik Roy" name stays
+  // visible and only the bottom hem is free to ripple. It's still a live
+  // wave (not a static rectangle): wind and scroll-linked flow ripple
+  // through it constantly, and it can be grabbed, dragged, and torn —
+  // tearing near the middle splits the name and reveals what's underneath.
+  // The real heading is baked onto the fabric itself (the DOM heading
+  // stays for accessibility but is made visually transparent via CSS), so
+  // dragging or tearing the cloth genuinely distorts and can tear the name.
   const heroNameEl = document.getElementById('hero-name-text');
   document.querySelectorAll('.hero--cloth .cloth-canvas').forEach((c) => {
     new ClothSim(c, {
       interactive: true,
-      pins: 'left',
+      pinTop: true,
+      pinLeft: true,
+      pinRight: true,
       blend: 'source-over',
       alpha: 0.97,
-      gravity: 560,
-      windBase: 320,
+      gravity: 220,
+      windBase: 260,
       pointSpacing: 24,
       tearable: true,
-      tearThreshold: 2.1,
+      tearThreshold: 1.9,
       textEl: heroNameEl,
       textLines: heroNameEl ? ['Koushik', 'Roy'] : null,
       palette: [
