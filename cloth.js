@@ -45,6 +45,11 @@
       // whichever direction the page is being scrolled
       this.flowPhase = 0;
       this.lastScrollY = scrollY;
+      this.scrollVelocity = 0;
+      this.targetScrollVelocity = 0;
+      this.lastScrollTime = performance.now();
+      this._burstUntil = 0;
+      this._burstCooldownUntil = 0;
 
       // tearing (easter egg: pull hard enough on the hero flag to snap threads)
       this.tearable = !!opts.tearable;
@@ -93,10 +98,16 @@
 
     onScroll() {
       const y = scrollY;
-      // scrolling down pushes the wave phase one way, scrolling up the other,
-      // so the fabric visibly flows in the direction of travel
-      this.flowPhase += (y - this.lastScrollY) * 0.045;
+      const now = performance.now();
+      const deltaY = y - this.lastScrollY;
+      const elapsed = Math.max(8, now - this.lastScrollTime);
+      const velocity = deltaY / elapsed;
+
+      // Strong directional gust: down = left → right, up = right → left.
+      this.targetScrollVelocity = Math.max(-4.5, Math.min(4.5, velocity * 3.2));
+      this.flowPhase += deltaY * 0.135;
       this.lastScrollY = y;
+      this.lastScrollTime = now;
     }
 
     bindPointer() {
@@ -304,6 +315,10 @@
       const dts = Math.min(dt, 34) / 1000;
       this.time += dts;
 
+      // Smooth strong scroll impulses and let them decay naturally.
+      this.scrollVelocity += (this.targetScrollVelocity - this.scrollVelocity) * Math.min(1, dts * 12);
+      this.targetScrollVelocity *= Math.pow(0.88, dts * 60);
+
       // the cloth always drifts gently on its own, and scrolling adds to
       // the same phase so the waves visibly flow along with the page
       if (!settle) this.flowPhase += dts * 0.5;
@@ -329,11 +344,18 @@
         // shifted by vertical position and the flow offset, so the ripple
         // pattern visibly travels down the fabric as you scroll down (and
         // back up as you scroll up), on top of a constant idle wave
-        const wind = this.windBase * (
+        const ambientWind = this.windBase * (
             0.3
             + 0.45 * Math.sin(windPhase + p.c * 0.35 + p.r * 0.12 - flow * 0.8)
             + 0.25 * Math.sin(windPhase * 1.7 + p.c * 0.9 - p.r * 0.4 - flow * 0.4)
           );
+
+        // Scroll creates a real horizontal gust, not just a phase shift.
+        const scrollWind = this.scrollVelocity * this.windBase * 1.45 * (
+          0.45 + 0.55 * Math.sin(windPhase * 0.75 + p.r * 0.18 - p.c * 0.08 - flow * 0.12)
+        );
+
+        const wind = ambientWind + scrollWind;
 
         // gentle pointer-proximity push (works even without grabbing)
         let pushX = 0, pushY = 0;
@@ -407,20 +429,26 @@
     }
 
     onBurst() {
-      // radial shockwave from the canvas center, pushed into each point's
-      // previous position so Verlet integration reads it as outward velocity —
-      // strong enough to visibly snap the fabric outward like a popped balloon
+      const now = performance.now();
+      if (now < this._burstCooldownUntil) return;
+
+      this._burstCooldownUntil = now + 900;
+      this._burstUntil = now + 420;
+
       const cx = this.w / 2, cy = this.h / 2;
+      const maxDistance = Math.hypot(this.w / 2, this.h / 2);
+
       for (const p of this.points) {
         if (p.pinned || p.grabbed) continue;
         const dx = p.x - cx, dy = p.y - cy;
         const dist = Math.hypot(dx, dy) || 1;
-        const falloff = Math.max(0, 1 - dist / (Math.max(this.w, this.h) * 0.9));
-        const force = 260 * falloff;
+        const falloff = Math.pow(Math.max(0, 1 - dist / maxDistance), 1.6);
+        const force = 145 * falloff;
         p.px -= (dx / dist) * force;
         p.py -= (dy / dist) * force;
       }
-      this._burstFlashUntil = performance.now() + 260;
+
+      this._burstFlashUntil = now + 180;
     }
 
     triColor(p1, p2, p3, alphaMul) {
@@ -480,7 +508,9 @@
       }
 
       // the baked name text, warped per-triangle to follow the fabric
-      if (this.textTexture && this.textTriangles.length) {
+      const bursting = now < this._burstUntil;
+      // Temporarily skip expensive per-triangle text warping during the burst.
+      if (!bursting && this.textTexture && this.textTriangles.length) {
         for (const [p1, p2, p3] of this.textTriangles) {
           this.drawTexturedTriangle(p1, p2, p3);
         }
@@ -524,7 +554,7 @@
     blend: 'source-over',
     alpha: 0.5,
     gravity: 260,
-    windBase: 200,
+    windBase: 280,
     pointSpacing: 70
   });
 
@@ -547,7 +577,7 @@
       blend: 'source-over',
       alpha: 0.97,
       gravity: 220,
-      windBase: 260,
+      windBase: 320,
       pointSpacing: 24,
       tearable: true,
       tearThreshold: 1.9,

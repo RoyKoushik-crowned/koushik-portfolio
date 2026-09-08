@@ -2562,3 +2562,13 @@ main::before{
   pointer-events:auto;
   cursor:grab;
 }
+
+
+/* ---------- Hero Konami clue ---------- */
+.hero-konami-clue{
+  display:block; margin-top:14px; font-family:var(--font-mono); font-size:0.62rem;
+  letter-spacing:0.16em; line-height:1; color:rgba(232,236,244,0.32); user-select:none;
+  transition:color 180ms ease, transform 180ms ease;
+}
+.hero-editorial-art:hover .hero-konami-clue{ color:rgba(232,236,244,0.58); transform:translateX(2px); }
+@media (max-width:620px){ .hero-konami-clue{ font-size:0.52rem; letter-spacing:0.1em; margin-top:10px; } }
